@@ -20,7 +20,7 @@ Overall, I wanted a project that would really challenge my abilities in a new wa
 - Enemies can shoot and can target the user
 
 # Wireframe
-
+Saved in file tree above as Lol_Horde.png
 
 # Architecture and Technologies
 
@@ -37,18 +37,9 @@ There will be a few primary files:
 - Enemies: this file will manage how enemies interact with the game and player
 
 # Implementation Timeline
-Day 1 (Tues): 
-
-Day 2 (Wed):
-
-Day 3 (Thurs): 
-
-Day 4 (Fri): 
-
-Day 5 (Sat): 
-
-Day 6 (Sun): 
-
-    * Most important category
-    * Daily breakdown
-    * Aim to be done by Friday
+Day 1 (Tues): Canvas exists, User exists, enemies exist. User can move.
+Day 2 (Wed): User can shoot projectiles, Enemies can shoot projectiles, User can be killed/kill enemies, User and enemies can die
+Day 3 (Thurs): User can complete a level and move onto then next level, map is populated with platforms
+Day 4 (Fri): User can jump, fall. Enemies follow user.
+Day 5 (Sat): Fix bugs with enemies/player. Allow players to swap option for character. Finish UI details (Start/Stop button, enemies remaining, etc)
+Day 6 (Sun): Any extra lingering things 
