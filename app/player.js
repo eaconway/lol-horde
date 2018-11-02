@@ -3,6 +3,7 @@ import MovingObject from './moving_object';
 import * as HordeUtil from "./horde_util";
 import Bullet from './bullet';
 import Platform from './platform';
+import Intersection from 'intersection';
 
 function randomColor() {
     const hexDigits = "0123456789ABCDEF";
@@ -32,6 +33,7 @@ class Player extends MovingObject {
         this.playerMove = this.playerMove.bind(this);
         this.facing = 1; //1 is facing right
         this.fireBullet = this.fireBullet.bind(this);
+        this.nextValidMove = this.nextValidMove.bind(this);
         this.draw = this.draw.bind(this);
         this.grounded = false;
         this.width = options.width;
@@ -78,11 +80,15 @@ class Player extends MovingObject {
 
       let next_loc = [this.pos[0] + move[0], this.pos[1] + move[1]];
       console.log('next loc, player moved ', next_loc);
+
       if (!this.validMove(next_loc)){
         if (move[0] === 0){
           // if (!this.validMoveY(next_loc)){
+          if (this.grounded === true && move[1] > 0){ return; }
+
           this.pos[1] += move[1];
           this.vel[1] = move[1] * 20;
+          this.grounded = false;
           // }
         } else if (move[1] === 0) {
           this.pos[0] += move[0];
@@ -184,6 +190,7 @@ class Player extends MovingObject {
            next_loc[1] < platform.pos[1] + platform.height &&
            next_loc[1] + this.height > platform.pos[1]) {
 
+
             return collided = true;
         }
       });
@@ -191,9 +198,132 @@ class Player extends MovingObject {
       return collided;
     }
 
-    move(timeDelta) {
 
-        if (this.vel[1] < 20) {
+
+    nextValidMove(offsetX, offsetY){
+      let collided = false;
+
+      let next_loc = [this.pos[0] + offsetX, this.pos[1] + offsetY];
+
+      this.game.platforms.some(platform => {
+        if (next_loc[0] < platform.pos[0] + platform.width &&
+           next_loc[0] + this.width > platform.pos[0] &&
+           next_loc[1] < platform.pos[1] + platform.height &&
+           next_loc[1] + this.height > platform.pos[1]) {
+
+            // this.grounded = true;
+            debugger;
+
+            // if (this.grounded === true){
+            //   return [this.pos[0] + offsetX, this.pos[1]];
+            // }
+
+
+            // if we're not grounded, check where we hit next box
+            // let slope = (next_loc[1] - this.pos[1])/(next_loc[0] - this.pos[0]);
+
+            let x = 0;
+            // let y = slope(x - this.[0]) + this.pos[1];
+
+            let smallest_dist_intersected = '';
+            let shortest_line = {};
+            let intersect = '';
+            // let results = { dist: point };
+
+            let platformLines = [
+              [[platform.pos[0], platform.pos[1]], [platform.pos[0] + platform.width, platform.pos[1]], { x: 0, y: -1}],
+              [[platform.pos[0] + platform.width, platform.pos[1]], [platform.pos[0] + platform.width, platform.pos[1] + platform.height], { x: 1, y: 0}],
+              [[platform.pos[0] + platform.width, platform.pos[1] + platform.height], [platform.pos[0], platform.pos[1] + platform.height], { x: 0, y: 1}],
+              [[platform.pos[0], platform.pos[1]], [platform.pos[0], platform.pos[1]+ platform.height], { x: -1, y: 0}]
+            ];
+
+            platformLines.some(line => {
+              let intersection = Intersection.intersect(
+                { start:{ x: this.pos[0], y: this.pos[1]}, end:{x: next_loc[0], y: next_loc[1]} },
+                { start:{ x: line[0][0], y: line[0][1]}, end:{x: line[1][0], y: line[1][1]} }
+              )
+
+              if (intersection != false){
+                let dist = ((intersection.x - this.pos[0])^2 + (intersection.y - this.pos[1])^2)^(1/2);
+                if (smallest_dist_intersected === ""  || dist < smallest_dist_intersected){
+                  shortest_line = line;
+                  intersect = intersection;
+                  smallest_dist_intersected = dist;
+                }
+              }
+
+            });
+
+            // let slope = (intersect[1] - this.pos[1])/(intersect[0] - this.pos[0]);
+
+            let unit_divisor = ((this.vel[0])^2 + (this.vel[1])^2)^(1/2);
+
+            let new_vect = [(0 - this.vel[0])/unit_divisor, (0 - this.vel[1])/unit_divisor];
+
+            let new_vect_dirs = [];
+
+            // if (new_vect[0] != 0){
+            //     new_vect_dirs.push(new_vect[0]/Math.abs[new_vect[0]]);
+            //   } else {
+            //     new_vect_dirs.push(0);
+            //   }
+            //
+            //   if (new_vect[1] != 0){
+            //       new_vect_dirs.push(new_vect[1]/Math.abs[new_vect[1]]);
+            //     } else {
+            //       new_vect_dirs.push(0);
+            //     }
+            new_vect.forEach(num => {
+              if (num != 0){
+                new_vect_dirs.push(num/Math.abs(num));
+              } else {
+                new_vect_dirs.push(0);
+              }
+            });
+            // let new_vect_dirs = [new_vect[0]/Math.abs[new_vect[0]], new_vect[1]/Math.abs[new_vect[1]]]
+
+            let new_x = intersect.x + new_vect[0] + (new_vect_dirs[0] * this.width);
+            let new_y = intersect.y + new_vect[1] + (new_vect_dirs[1] * this.height);
+
+            debugger;
+            // let new_x = (shortest_line[2].x * (this.width + 1)) + intersect.x;
+            // let new_y = (shortest_line[2].y * (this.height + 1)) + intersect.y;
+
+            //stop y velocity when you hit bottom and top, same for x
+            if (shortest_line[2].y === -1 || shortest_line[2].y === 1){
+              this.vel[1] =  1;
+            } else {
+              this.vel[0] = 0;
+            }
+
+            // grounded if we hit the top
+            if (shortest_line[2].y === -1) {
+              this.grounded = true;
+              console.log('we\'re grounded');
+            }
+
+            // set next location
+
+            // if (this.grounded) {
+            //   next_loc = [new_x, this.pos[1]];
+            // } else {
+            //   next_loc = [new_x, new_y];
+            // }
+
+            next_loc = [new_x, new_y];
+
+            debugger;
+            return next_loc;
+        }
+      });
+      //
+      // this.grounded = false;
+      return next_loc
+    }
+
+    move(timeDelta) {
+        console.log('velocity', this.vel[1])
+        if (this.vel[1] < 20 && this.grounded === false) {
           this.vel[1] += 1;
         }
 
@@ -208,12 +338,14 @@ class Player extends MovingObject {
         offsetY = this.vel[1] * velocityScale;
         console.log(offsetX, offsetY)
 
-        let next_loc = '';
-        if (this.grounded){
-          next_loc = [this.pos[0] + offsetX, this.pos[1]];
-        } else {
-          next_loc = [this.pos[0] + offsetX, this.pos[1] + offsetY];
-        }
+        // let next_loc = '';
+        // if (this.grounded){
+        //   next_loc = [this.pos[0] + offsetX, this.pos[1]];
+        // } else {
+        //   next_loc = [this.pos[0] + offsetX, this.pos[1] + offsetY];
+        // }
+
+
         // this.pos = [this.pos[0] + offsetX, this.pos[1] + offsetY];
         //
         // if (!this.validMoveX(next_loc)){
@@ -225,15 +357,21 @@ class Player extends MovingObject {
         //   // console.log('valid move');
         //   this.pos[1] = next_loc[1];
         // }
-        if (this.validMove(next_loc)){
-          // this.pos = next_loc;
-          this.grounded = true;
-          console.log('grounded', this.grounded);
-        } else {
-          this.grounded = false;
-          console.log('grounded', this.grounded);
-          this.pos = next_loc;
-        }
+        console.log('prev_position', this.pos);
+        this.pos = this.nextValidMove(offsetX, offsetY);
+        console.log('updated pos', this.pos);
+
+        // if (this.nextValidMove(next_loc)){
+        //   // this.pos = next_loc;
+        //   this.grounded = true;
+        //   console.log('grounded', this.grounded);
+        //   // this.next_best(next_loc, )
+        //
+        // } else {
+        //   this.grounded = false;
+        //   console.log('grounded', this.grounded);
+        //   this.pos = next_loc;
+        // }
     }
 
     // valid_move?()
