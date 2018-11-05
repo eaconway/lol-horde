@@ -78,34 +78,55 @@ class Player extends MovingObject {
         // this.vel[1] += impulse[1];
       // console.log()
 
-      let next_loc = [this.pos[0] + move[0], this.pos[1] + move[1]];
-      console.log('next loc, player moved ', next_loc);
+      // let next_loc = [this.pos[0] + move[0], this.pos[1] + move[1]];
+      // console.log('next loc, player moved ', next_loc);
+      //
+      //
+      // if (!this.validMove(next_loc)){
+      //   // debugger;
+      //   if (move[0] === 0){
+      //     // if (!this.validMoveY(next_loc)){
+      //     // if (this.grounded === true && move[1] > 0) { return; }
+      //     if (this.grounded && move[1] < 0){
+      //       // debugger;
+      //       // this.pos[1] += move[1];
+      //       this.vel[1] = move[1] * 20;
+      //       // this.grounded = false;
+      //     }
+      //     // }
+      //   } else if (move[1] === 0) {
+      //     // this.pos[0] += move[0];
+      //     this.vel[0] = move[0] * 3;
+      //
+      //     //Change orientation
+      //     if (this.facing > 0 && move[0] < 0){
+      //       console.log('change facing');
+      //       this.facing = -1;
+      //     } else if (this.facing < 0 && move[0] > 0){
+      //       this.facing = 1;
+      //     }
+      //   }
+      // }
+      console.log('Player Moved AFHAFKJHWKVJHLEVKJAHLDFKJAN');
 
+      if (move[0] === 0){
+        if (this.grounded && move[1] < 0){
+          let new_vel = move[1] * 20;
+          this.vel[1] = Math.min(30, new_vel);
+        }
+      } else if (move[1] === 0) {
+        let new_vel = move[0] * 6;
+        this.vel[0] = Math.min(30, new_vel);
 
-
-      if (!this.validMove(next_loc)){
-        if (move[0] === 0){
-          // if (!this.validMoveY(next_loc)){
-          // if (this.grounded === true && move[1] > 0) { return; }
-          if (this.grounded && move[1] < 0){
-            this.pos[1] += move[1];
-            this.vel[1] = move[1] * 20;
-            this.grounded = false;
-          }
-          // }
-        } else if (move[1] === 0) {
-          this.pos[0] += move[0];
-          this.vel[0] = move[0] * 3;
-
-          //Change orientation
-          if (this.facing > 0 && move[0] < 0){
-            console.log('change facing');
-            this.facing = -1;
-          } else if (this.facing < 0 && move[0] > 0){
-            this.facing = 1;
-          }
+        //Change orientation
+        if (this.facing > 0 && move[0] < 0){
+          console.log('change facing');
+          this.facing = -1;
+        } else if (this.facing < 0 && move[0] > 0){
+          this.facing = 1;
         }
       }
+
     }
 
     validMoveX(next_loc){
@@ -205,8 +226,30 @@ class Player extends MovingObject {
 
     nextValidMove(offsetX, offsetY){
       let collided = false;
+      console.log('offsets,', offsetX, offsetY);
 
       let next_loc = [this.pos[0] + offsetX, this.pos[1] + offsetY];
+
+      if (this.grounded && this.vel[1] > 0 && this.vel[0] != 0){
+        next_loc = [this.pos[0] + offsetX, this.pos[1]];
+      }
+
+      //
+      // if (this.vel[0] != 0){
+      //   debugger;
+      // }
+
+      // if (this.grounded & we try moving down){
+      //   ignore the down callout
+      // }
+
+      //check if next location is in bounds
+      if (next_loc >)
+
+
+      console.log('this pos', this.pos);
+      console.log('next pos', next_loc);
+      console.log('velocity', this.vel);
 
       this.game.platforms.some(platform => {
         if (next_loc[0] < platform.pos[0] + platform.width &&
@@ -225,11 +268,13 @@ class Player extends MovingObject {
             // if we're not grounded, check where we hit next box
             // let slope = (next_loc[1] - this.pos[1])/(next_loc[0] - this.pos[0]);
 
+            console.log('found a collision with next pos');
+
             let x = 0;
             // let y = slope(x - this.[0]) + this.pos[1];
 
             let smallest_dist_intersected = '';
-            let shortest_line = {};
+            let shortest_line = [];
             let intersect = '';
             // let results = { dist: point };
 
@@ -244,10 +289,13 @@ class Player extends MovingObject {
               let intersection = Intersection.intersect(
                 { start:{ x: this.pos[0], y: this.pos[1]}, end:{x: next_loc[0], y: next_loc[1]} },
                 { start:{ x: line[0][0], y: line[0][1]}, end:{x: line[1][0], y: line[1][1]} }
-              )
+              );
 
               if (intersection != false){
-                let dist = ((intersection.x - this.pos[0])^2 + (intersection.y - this.pos[1])^2)^(1/2);
+                let dist = Math.abs(
+                  ((intersection.x - this.pos[0])^2 + (intersection.y - this.pos[1])^2)^(1/2)
+                );
+                console.log('dist',dist);
                 if (smallest_dist_intersected === ""  || dist < smallest_dist_intersected){
                   shortest_line = line;
                   intersect = intersection;
@@ -256,6 +304,19 @@ class Player extends MovingObject {
               }
 
             });
+
+            // if (shortest_line[2].x === 1){
+            if (next_loc[1] > 530){
+              debugger;
+            }
+
+            console.log(' line found was ', shortest_line[2]);
+
+            // Check if we're grounded and the point of impact if the top of this platforms
+            // (meaning we dont need to change our pos)
+            // if (this.grounded && shortest_line[2].y === -1) {
+            //   return this.pos;
+            // }
 
             // let slope = (intersect[1] - this.pos[1])/(intersect[0] - this.pos[0]);
 
@@ -301,6 +362,8 @@ class Player extends MovingObject {
 
             // grounded if we hit the top
             if (shortest_line[2].y === -1) {
+              // debugger
+              console.log('we\'re grounded');
               this.grounded = true;
               // console.log('we\'re grounded');
             }
@@ -320,7 +383,15 @@ class Player extends MovingObject {
         }
       });
       //
-      // this.grounded = false;
+      // debugger;
+
+      // if we were grounded and 1) we're only moving horizontally
+      // 2) out next move wont hit anything and
+      // 3)
+      if (this.grounded && this.vel[1] < 0){
+        console.log('no longer grounded');
+        this.grounded = false;
+      }
 
 
       return next_loc
@@ -328,14 +399,25 @@ class Player extends MovingObject {
 
     move(timeDelta) {
         // console.log('velocity', this.vel[1])
-        if (this.vel[1] < 20 && this.grounded === false) {
-          this.vel[1] += 1;
+        let terminal_vel_Y = 20;
+        let deceleration_Y = 1;
+        let deceleration_X = 0.3;
+
+        //GRAVITY - Vertical Deceleration
+        if (this.vel[1] < terminal_vel_Y && this.grounded === false) {
+          this.vel[1] += deceleration_Y;
         }
 
+        // Horizontal Deceleration
         if (this.vel[0] > 0){
-          this.vel[0] -= 0.1;
+          // debugger;
+          let next_vel = this.vel[0] - deceleration_X;
+          console.log("last vel", this.vel[0], 'next vel', next_vel);
+          this.vel[0] = Math.max(0, next_vel);
         } else if (this.vel[0] < 0) {
-          this.vel[0] += 0.1 ;
+          let next_vel = this.vel[0] + deceleration_X;
+          console.log("last vel", this.vel[0], 'next vel', next_vel);
+          this.vel[0] = Math.min(0, next_vel);
         }
 
         const velocityScale = timeDelta / NORMAL_FRAME_TIME_DELTA,
@@ -364,6 +446,7 @@ class Player extends MovingObject {
         // }
         // console.log('prev_position', this.pos);
         this.pos = this.nextValidMove(offsetX, offsetY);
+        console.log('new pos after next valid is: ', this.pos);
         // console.log('updated pos', this.pos);
 
         // if (this.nextValidMove(next_loc)){
@@ -380,6 +463,37 @@ class Player extends MovingObject {
     }
 
     // valid_move?()
+
+    draw(ctx) {
+      // debugger;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      // c.fillStyle = "black";
+      // c.lineWidth = 2.0;
+      // c.beginPath();
+      // ctx.arc(
+      //     this.pos[0], this.pos[1], Player.RADIUS, 0, 2 * Math.PI, true
+      // );
+
+      // ctx.moveTo(this.pos[0], this.pos[1]);
+      // ctx.lineTo(this.pos[0] + this.width, this.pos[1]);
+      // ctx.lineTo(this.pos[0] + this.width, this.pos[1] + this.height);
+      // ctx.lineTo(this.pos[0], this.pos[1] + this.height);
+      // ctx.stroke();
+
+
+      ctx.moveTo(this.pos[0], this.pos[1]);
+      ctx.drawImage(this.image,
+        0,
+        35,
+        50,
+        30,
+        this.pos[0],
+        this.pos[1],
+        this.width,
+        this.height);
+        ctx.fill();
+      }
 
     collideWith(otherObject) {
       if (otherObject instanceof Platform){
@@ -427,37 +541,6 @@ class Player extends MovingObject {
         const centerDist = HordeUtil.dist(this.pos, otherObject.pos);
         return centerDist < (this.radius + otherObject.radius);
       }
-    }
-
-    draw(ctx) {
-      // debugger;
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        // c.fillStyle = "black";
-        // c.lineWidth = 2.0;
-        // c.beginPath();
-        // ctx.arc(
-        //     this.pos[0], this.pos[1], Player.RADIUS, 0, 2 * Math.PI, true
-        // );
-
-        // ctx.moveTo(this.pos[0], this.pos[1]);
-        // ctx.lineTo(this.pos[0] + this.width, this.pos[1]);
-        // ctx.lineTo(this.pos[0] + this.width, this.pos[1] + this.height);
-        // ctx.lineTo(this.pos[0], this.pos[1] + this.height);
-        // ctx.stroke();
-
-
-        ctx.moveTo(this.pos[0], this.pos[1]);
-        ctx.drawImage(this.image,
-           0,
-           35,
-           50,
-           30,
-           this.pos[0],
-           this.pos[1],
-           this.width,
-           this.height);
-        ctx.fill();
     }
 }
 
