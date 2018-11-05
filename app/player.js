@@ -81,18 +81,21 @@ class Player extends MovingObject {
       let next_loc = [this.pos[0] + move[0], this.pos[1] + move[1]];
       console.log('next loc, player moved ', next_loc);
 
+
+
       if (!this.validMove(next_loc)){
         if (move[0] === 0){
           // if (!this.validMoveY(next_loc)){
-          if (this.grounded === true && move[1] > 0){ return; }
-
-          this.pos[1] += move[1];
-          this.vel[1] = move[1] * 20;
-          this.grounded = false;
+          // if (this.grounded === true && move[1] > 0) { return; }
+          if (this.grounded && move[1] < 0){
+            this.pos[1] += move[1];
+            this.vel[1] = move[1] * 20;
+            this.grounded = false;
+          }
           // }
         } else if (move[1] === 0) {
           this.pos[0] += move[0];
-          this.vel[0] = move[0] * 6;
+          this.vel[0] = move[0] * 3;
 
           //Change orientation
           if (this.facing > 0 && move[0] < 0){
@@ -212,7 +215,7 @@ class Player extends MovingObject {
            next_loc[1] + this.height > platform.pos[1]) {
 
             // this.grounded = true;
-            debugger;
+            // debugger;
 
             // if (this.grounded === true){
             //   return [this.pos[0] + offsetX, this.pos[1]];
@@ -285,7 +288,7 @@ class Player extends MovingObject {
             let new_x = intersect.x + new_vect[0] + (new_vect_dirs[0] * this.width);
             let new_y = intersect.y + new_vect[1] + (new_vect_dirs[1] * this.height);
 
-            debugger;
+            // debugger;
             // let new_x = (shortest_line[2].x * (this.width + 1)) + intersect.x;
             // let new_y = (shortest_line[2].y * (this.height + 1)) + intersect.y;
 
@@ -299,7 +302,7 @@ class Player extends MovingObject {
             // grounded if we hit the top
             if (shortest_line[2].y === -1) {
               this.grounded = true;
-              console.log('we\'re grounded');
+              // console.log('we\'re grounded');
             }
 
             // set next location
@@ -312,17 +315,19 @@ class Player extends MovingObject {
 
             next_loc = [new_x, new_y];
 
-            debugger;
+            // debugger;
             return next_loc;
         }
       });
       //
       // this.grounded = false;
+
+
       return next_loc
     }
 
     move(timeDelta) {
-        console.log('velocity', this.vel[1])
+        // console.log('velocity', this.vel[1])
         if (this.vel[1] < 20 && this.grounded === false) {
           this.vel[1] += 1;
         }
@@ -336,7 +341,7 @@ class Player extends MovingObject {
         const velocityScale = timeDelta / NORMAL_FRAME_TIME_DELTA,
         offsetX = this.vel[0] * velocityScale,
         offsetY = this.vel[1] * velocityScale;
-        console.log(offsetX, offsetY)
+        // console.log(offsetX, offsetY)
 
         // let next_loc = '';
         // if (this.grounded){
@@ -357,9 +362,9 @@ class Player extends MovingObject {
         //   // console.log('valid move');
         //   this.pos[1] = next_loc[1];
         // }
-        console.log('prev_position', this.pos);
+        // console.log('prev_position', this.pos);
         this.pos = this.nextValidMove(offsetX, offsetY);
-        console.log('updated pos', this.pos);
+        // console.log('updated pos', this.pos);
 
         // if (this.nextValidMove(next_loc)){
         //   // this.pos = next_loc;
