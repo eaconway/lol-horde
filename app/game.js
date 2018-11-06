@@ -49,7 +49,7 @@ class Game {
         console.log("what is this?", this);
         console.log('initial player position', [Game.DIM_X/2, Game.DIM_Y/2],)
         const player = new Player({
-            pos: [Game.DIM_X/2, 350],
+            pos: [100, 400],
             game: this
         });
 

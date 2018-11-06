@@ -4,6 +4,8 @@ import * as HordeUtil from "./horde_util";
 import Bullet from './bullet';
 import Platform from './platform';
 import Intersection from 'intersection';
+import LineIntersection from 'line-intersection';
+import intersects from 'rectangles-intersect';
 
 function randomColor() {
     const hexDigits = "0123456789ABCDEF";
@@ -64,7 +66,7 @@ class Player extends MovingObject {
         console.log('facing is', this.facing)
         const bullet = new Bullet({
             pos: this.pos,
-            vel: [this.facing* 8, 0],
+            vel: [this.facing * 8, 0],
             color: this.color,
             game: this.game
         });
@@ -73,40 +75,6 @@ class Player extends MovingObject {
     }
 
     playerMove(move) {
-      // console.log('running player power', move)
-        // this.vel[0] += impulse[0];
-        // this.vel[1] += impulse[1];
-      // console.log()
-
-      // let next_loc = [this.pos[0] + move[0], this.pos[1] + move[1]];
-      // console.log('next loc, player moved ', next_loc);
-      //
-      //
-      // if (!this.validMove(next_loc)){
-      //   // debugger;
-      //   if (move[0] === 0){
-      //     // if (!this.validMoveY(next_loc)){
-      //     // if (this.grounded === true && move[1] > 0) { return; }
-      //     if (this.grounded && move[1] < 0){
-      //       // debugger;
-      //       // this.pos[1] += move[1];
-      //       this.vel[1] = move[1] * 20;
-      //       // this.grounded = false;
-      //     }
-      //     // }
-      //   } else if (move[1] === 0) {
-      //     // this.pos[0] += move[0];
-      //     this.vel[0] = move[0] * 3;
-      //
-      //     //Change orientation
-      //     if (this.facing > 0 && move[0] < 0){
-      //       console.log('change facing');
-      //       this.facing = -1;
-      //     } else if (this.facing < 0 && move[0] > 0){
-      //       this.facing = 1;
-      //     }
-      //   }
-      // }
       console.log('Player Moved AFHAFKJHWKVJHLEVKJAHLDFKJAN');
 
       if (move[0] === 0){
@@ -126,6 +94,198 @@ class Player extends MovingObject {
           this.facing = 1;
         }
       }
+
+    }
+
+    nextValidMove(offsetX, offsetY){
+      let collided = false;
+      console.log('offsets,', offsetX, offsetY);
+
+      // determine next location. If grounded, not jumping, and
+      // moving horizontally, adjust
+      let next_loc = [this.pos[0] + offsetX, this.pos[1] + offsetY];
+
+      if (this.grounded && this.vel[1] > 0 && this.vel[0] != 0){
+        next_loc = [this.pos[0] + offsetX, this.pos[1]];
+      } else if (this.grounded && this.vel[0] === 0 && this.vel[1] > 0) {
+        return this.pos;
+      }
+
+      console.log('this pos', this.pos);
+      console.log('next pos', next_loc);
+      console.log('velocity', this.vel);
+
+      // if (next_loc[1] > 500){
+      //   debugger;
+      // }
+
+      let nextLocPoints = [
+        { x: next_loc[0], y: next_loc[1] },
+        { x: next_loc[0] + this.width , y: next_loc[1]},
+        { x: next_loc[0] + this.width, y: next_loc[1] + this.height },
+        { x: next_loc[0], y: next_loc[1] + this.height  },
+      ]
+
+      this.game.platforms.some(platform => {
+        console.log('checking platform ', platform);
+        // Find all the sides of the rectangle. Represent as lines below
+        // let platformLines = [
+        //   [[platform.pos[0], platform.pos[1]], [platform.pos[0] + platform.width, platform.pos[1]], { x: 0, y: -1}, 'top'],
+        //   [[platform.pos[0] + platform.width, platform.pos[1]], [platform.pos[0] + platform.width, platform.pos[1] + platform.height], { x: 1, y: 0}, 'right'],
+        //   [[platform.pos[0] + platform.width, platform.pos[1] + platform.height], [platform.pos[0], platform.pos[1] + platform.height], { x: 0, y: 1}, 'bottom'],
+        //   [[platform.pos[0], platform.pos[1]], [platform.pos[0], platform.pos[1]+ platform.height], { x: -1, y: 0}, 'left']
+        // ];
+
+        let platformPoints = [
+          { x: platform.pos[0], y: platform.pos[1] },
+          { x: platform.pos[0] + platform.width, y: platform.pos[1] },
+          { x: platform.pos[0] + platform.width, y: platform.pos[1] + platform.height },
+          { x: platform.pos[0], y: platform.pos[1] + platform.height },
+        ]
+
+        // //See if they intersect and store intersection points
+        // let smallest_dist_intersected = '';
+        // let shortest_line = [];
+        // // let intersect_arr =  [];
+        // let intersect = '';
+
+        // // Iterate through sides for intersections
+        // platformLines.some(line => {
+        //   console.log('for line', line[3]);
+        //   let intersection = LineIntersection.findSegmentIntersection([
+        //     { x: this.pos[0], y: this.pos[1]},
+        //     { x: next_loc[0], y: next_loc[1]},
+        //     { x: line[0][0], y: line[0][1]},
+        //     { x: line[1][0], y: line[1][1]}
+        //   ]);
+
+        //   // if (this.pos[1] < 550 && next_loc[1]> 550){
+        //   //   debugger;
+        //   // }
+
+        //   // let intersection = Intersection.intersect(
+        //   //   { start:{ x: this.pos[0], y: this.pos[1]}, end:{x: next_loc[0], y: next_loc[1]} },
+        //   //   { start:{ x: line[0][0], y: line[0][1]}, end:{x: line[1][0], y: line[1][1]} }
+        //   // );
+
+        //   if (intersection != false){
+
+        //     let dist = Math.abs(
+        //       ((intersection.x - this.pos[0])^2 + (intersection.y - this.pos[1])^2)^(1/2)
+        //     );
+        //     console.log('dist',dist, 'line', line[3]);
+        //     if (smallest_dist_intersected === ""  || dist < smallest_dist_intersected){
+        //       shortest_line = line;
+        //       intersect = intersection;
+        //       smallest_dist_intersected = dist;
+        //     }
+        //   }
+        // });
+        console.log(nextLocPoints);
+        console.log(platformPoints);
+
+        let intersect = intersects(
+          [[nextLocPoints[0].x, nextLocPoints[0].y], [nextLocPoints[1].x, nextLocPoints[1].y],
+            [nextLocPoints[2].x, nextLocPoints[2].y], [nextLocPoints[3].x, nextLocPoints[3].y]],
+
+          [[platformPoints[0].x, platformPoints[0].y], [platformPoints[1].x, platformPoints[1].y],
+            [platformPoints[2].x, platformPoints[2].y], [platformPoints[3].x, platformPoints[3].y]],
+        );
+
+        console.log('intersects', intersect);
+
+        if (intersect){
+          return next_loc = this.pos;
+        } 
+
+        // // If our line of travel intersects a platform
+        // if (intersect != ''){
+
+        //   // create unit vectors to get the smallest movement before collision
+        //   let unit_divisor = ((this.vel[0])^2 + (this.vel[1])^2)^(1/2);
+        //   let unit_vect = [(0 - this.vel[0])/unit_divisor, (0 - this.vel[1])/unit_divisor];
+        //   let unit_vect_dirs = [];
+
+        //   unit_vect.forEach(num => {
+        //     if (num != 0){
+        //       unit_vect_dirs.push(num/Math.abs(num));
+        //     } else {
+        //       unit_vect_dirs.push(0);
+        //     }
+        //   });
+
+        //   // Intersect +/- unit vector +/- adjustment to avoid collision
+        //   let new_x = intersect.x + unit_vect[0] + (unit_vect_dirs[0] * this.width);
+        //   let new_y = intersect.y + unit_vect[1] + (unit_vect_dirs[1] * this.height);
+
+        //   // Adjust velocity based on the side we've hit
+        //   // If we hit the top (landing), vel[1] = 1;
+        //   // if we hit the left/right side, vel[0] = 0;
+        //   // if we hit the bottom (of platform when jumping), vel[1] = 0;
+        //   switch(shortest_line[3]){
+        //     case 'top':
+        //       this.vel[1] = 1;
+        //       this.grounded = true;
+        //       break;
+        //     case 'right':
+        //       this.vel[0] = 0;
+        //       break;
+        //     case 'bottom':
+        //       this.vel[1] = 0;
+        //       break;
+        //     case 'left':
+        //       this.vel[0] = 0;
+        //       break;
+        //     default:
+        //       break;
+        //   }
+        //   console.log('new location after collision correction', [new_x, new_y]);
+        //   next_loc = [new_x, new_y];
+        //   return next_loc;
+        // }
+      });
+
+      // If there were no collisions on the next move, set grounded to false
+      if (this.grounded && this.vel[1] < 0){
+        console.log('no longer grounded');
+        this.grounded = false;
+      }
+
+      return next_loc;
+    }
+
+    move(timeDelta) {
+        let terminal_vel_Y = 10;
+        let deceleration_Y = 1;
+        let deceleration_X = 0.3;
+
+        // //GRAVITY - Vertical Deceleration
+        // if (this.vel[1] < terminal_vel_Y && this.grounded === false) {
+        //   this.vel[1] += deceleration_Y;
+        // }
+
+        // // Horizontal Deceleration
+        // if (this.vel[0] > 0){
+        //   // debugger;
+        //   let next_vel = this.vel[0] - deceleration_X;
+        //   console.log("last vel", this.vel[0], 'next vel', next_vel);
+        //   this.vel[0] = Math.max(0, next_vel);
+        // } else if (this.vel[0] < 0) {
+        //   let next_vel = this.vel[0] + deceleration_X;
+        //   console.log("last vel", this.vel[0], 'next vel', next_vel);
+        //   this.vel[0] = Math.min(0, next_vel);
+        // }
+
+        // const velocityScale = timeDelta / NORMAL_FRAME_TIME_DELTA,
+        // offsetX = this.vel[0] * velocityScale,
+        // offsetY = this.vel[1] * velocityScale;
+
+        const velocityScale = timeDelta / NORMAL_FRAME_TIME_DELTA,
+        offsetX = this.vel[0] * velocityScale,
+        offsetY = this.vel[1] * velocityScale;
+
+        this.pos = this.nextValidMove(offsetX, offsetY);
+        console.log('new pos after next valid is: ', this.pos);
 
     }
 
@@ -224,7 +384,72 @@ class Player extends MovingObject {
 
 
 
-    nextValidMove(offsetX, offsetY){
+    oldMove(timeDelta) {
+        // console.log('velocity', this.vel[1])
+        let terminal_vel_Y = 20;
+        let deceleration_Y = 1;
+        let deceleration_X = 0.3;
+
+        //GRAVITY - Vertical Deceleration
+        if (this.vel[1] < terminal_vel_Y && this.grounded === false) {
+          this.vel[1] += deceleration_Y;
+        }
+
+        // Horizontal Deceleration
+        if (this.vel[0] > 0){
+          // debugger;
+          let next_vel = this.vel[0] - deceleration_X;
+          console.log("last vel", this.vel[0], 'next vel', next_vel);
+          this.vel[0] = Math.max(0, next_vel);
+        } else if (this.vel[0] < 0) {
+          let next_vel = this.vel[0] + deceleration_X;
+          console.log("last vel", this.vel[0], 'next vel', next_vel);
+          this.vel[0] = Math.min(0, next_vel);
+        }
+
+        const velocityScale = timeDelta / NORMAL_FRAME_TIME_DELTA,
+        offsetX = this.vel[0] * velocityScale,
+        offsetY = this.vel[1] * velocityScale;
+        // console.log(offsetX, offsetY)
+
+        // let next_loc = '';
+        // if (this.grounded){
+        //   next_loc = [this.pos[0] + offsetX, this.pos[1]];
+        // } else {
+        //   next_loc = [this.pos[0] + offsetX, this.pos[1] + offsetY];
+        // }
+
+
+        // this.pos = [this.pos[0] + offsetX, this.pos[1] + offsetY];
+        //
+        // if (!this.validMoveX(next_loc)){
+        //   // console.log('valid move');
+        //   this.pos[0] = next_loc[0];
+        // }
+        // //
+        // if (!this.validMoveY(next_loc)){
+        //   // console.log('valid move');
+        //   this.pos[1] = next_loc[1];
+        // }
+        // console.log('prev_position', this.pos);
+        this.pos = this.nextValidMove(offsetX, offsetY);
+        console.log('new pos after next valid is: ', this.pos);
+        // console.log('updated pos', this.pos);
+
+        // if (this.nextValidMove(next_loc)){
+        //   // this.pos = next_loc;
+        //   this.grounded = true;
+        //   console.log('grounded', this.grounded);
+        //   // this.next_best(next_loc, )
+        //
+        // } else {
+        //   this.grounded = false;
+        //   console.log('grounded', this.grounded);
+        //   this.pos = next_loc;
+        // }
+    }
+
+    old_nextValidMove(offsetX, offsetY){
       let collided = false;
       console.log('offsets,', offsetX, offsetY);
 
@@ -244,7 +469,6 @@ class Player extends MovingObject {
       // }
 
       //check if next location is in bounds
-      if (next_loc >)
 
 
       console.log('this pos', this.pos);
@@ -395,71 +619,6 @@ class Player extends MovingObject {
 
 
       return next_loc
-    }
-
-    move(timeDelta) {
-        // console.log('velocity', this.vel[1])
-        let terminal_vel_Y = 20;
-        let deceleration_Y = 1;
-        let deceleration_X = 0.3;
-
-        //GRAVITY - Vertical Deceleration
-        if (this.vel[1] < terminal_vel_Y && this.grounded === false) {
-          this.vel[1] += deceleration_Y;
-        }
-
-        // Horizontal Deceleration
-        if (this.vel[0] > 0){
-          // debugger;
-          let next_vel = this.vel[0] - deceleration_X;
-          console.log("last vel", this.vel[0], 'next vel', next_vel);
-          this.vel[0] = Math.max(0, next_vel);
-        } else if (this.vel[0] < 0) {
-          let next_vel = this.vel[0] + deceleration_X;
-          console.log("last vel", this.vel[0], 'next vel', next_vel);
-          this.vel[0] = Math.min(0, next_vel);
-        }
-
-        const velocityScale = timeDelta / NORMAL_FRAME_TIME_DELTA,
-        offsetX = this.vel[0] * velocityScale,
-        offsetY = this.vel[1] * velocityScale;
-        // console.log(offsetX, offsetY)
-
-        // let next_loc = '';
-        // if (this.grounded){
-        //   next_loc = [this.pos[0] + offsetX, this.pos[1]];
-        // } else {
-        //   next_loc = [this.pos[0] + offsetX, this.pos[1] + offsetY];
-        // }
-
-
-        // this.pos = [this.pos[0] + offsetX, this.pos[1] + offsetY];
-        //
-        // if (!this.validMoveX(next_loc)){
-        //   // console.log('valid move');
-        //   this.pos[0] = next_loc[0];
-        // }
-        // //
-        // if (!this.validMoveY(next_loc)){
-        //   // console.log('valid move');
-        //   this.pos[1] = next_loc[1];
-        // }
-        // console.log('prev_position', this.pos);
-        this.pos = this.nextValidMove(offsetX, offsetY);
-        console.log('new pos after next valid is: ', this.pos);
-        // console.log('updated pos', this.pos);
-
-        // if (this.nextValidMove(next_loc)){
-        //   // this.pos = next_loc;
-        //   this.grounded = true;
-        //   console.log('grounded', this.grounded);
-        //   // this.next_best(next_loc, )
-        //
-        // } else {
-        //   this.grounded = false;
-        //   console.log('grounded', this.grounded);
-        //   this.pos = next_loc;
-        // }
     }
 
     // valid_move?()
