@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/konpa/devicon/df6431e323547add1b4cf45992913f15286456d3/devicon.min.css">
+    <!-- <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"> -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+</head>
+<body>
+  <div class='container'>
+    <div id='game-head'>
+      <div class='game-logo'>
+        <h1>THE LAST</h1>
+      </div>
+      <div class='game-meta-info'>
+        <div class='game-meta-segment'>
+          <h3>Character</h3>
+          <span id='character'>Tristana</span>
+        </div>
+        <div class='game-meta-segment'>
+          <h3>Level</h3>
+          <span id='level'>1</span>
+        </div>
+        <div class='game-meta-segment'>
+          <h3>Enemies Remaining</h3>
+          <span id='enemies'>4</span>
+        </div>
+      </div>
+      <div class='contact'>
+        <h2> Contact: </h2>
+        <div class='contact-icons-div'>
+          <a href="https://twitter.com/iceman2163?lang=en">
+            <i class="fab fa-twitter contact-icon"></i>
+          </a>
+          <a href="https://www.facebook.com/profile.php?id=702097197">
+            <i class="fab fa-facebook-f contact-icon"></i>
+          </a>
+        </div>
+        <div class='contact-icons-div'>
+          <a href="https://www.linkedin.com/in/eric-conway-a1bb675b/">
+            <i class="fab fa-linkedin-in contact-icon"></i>
+          </a>
+          <a href="https://github.com/eaconway">
+            <i class="fab fa-github contact-icon"></i>
+          </a>
+        </div>
+        <!-- <ul class="list-inline social-buttons">
+          <li class="list-inline-item">
+            <a href="https://twitter.com/iceman2163?lang=en">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a href="https://www.facebook.com/profile.php?id=702097197">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a href="https://www.linkedin.com/in/eric-conway-a1bb675b/">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a href="https://github.com/eaconway">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+        </ul> -->
+      </div>
+    </div>
+
+    <div id='game-body'>
+      <div class='game-controls'>
+        <div class='controls'>
+          <button id='play' class="game-button">Play</button>
+          <button id='play' class="game-button">Pause</button>
+        </div>
+        <div class='controls'>
+          <button id='play' class="game-button">Restart Level</button>
+          <button id='play' class="game-button">Restart Game</button>
+        </div>
+      </div>
+      <canvas width="800" height="600" id="canvas"></canvas>
+    </div>
+    <!-- <img src='./images/coin-sprite.png'/> -->
+    <!-- <script>
+        var canvas = document.getElementById('canvas');
+        var c = canvas.getContext('2d');
+        c.fillStyle = "red";
+        c.fillRect(100, 100, 400, 300);
+    </script> -->
+  </div>
+</body>
+</html>
