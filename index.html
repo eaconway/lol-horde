@@ -12,8 +12,11 @@
   <div class='container'>
     <div id='game-head'>
       <div class='game-logo'>
-        <h1>THE LAST</h1>
+        <a href="/">
+          <h1>THE LAST</h1>
+        </a>
       </div>
+
       <div class='game-meta-info'>
         <div class='game-meta-segment'>
           <h3>Character</h3>
@@ -28,6 +31,7 @@
           <span id='enemies'>4</span>
         </div>
       </div>
+
       <div class='contact'>
         <h2> Contact: </h2>
         <div class='contact-icons-div'>
@@ -38,6 +42,7 @@
             <i class="fab fa-facebook-f contact-icon"></i>
           </a>
         </div>
+
         <div class='contact-icons-div'>
           <a href="https://www.linkedin.com/in/eric-conway-a1bb675b/">
             <i class="fab fa-linkedin-in contact-icon"></i>
@@ -46,28 +51,6 @@
             <i class="fab fa-github contact-icon"></i>
           </a>
         </div>
-        <!-- <ul class="list-inline social-buttons">
-          <li class="list-inline-item">
-            <a href="https://twitter.com/iceman2163?lang=en">
-              <i class="fab fa-twitter"></i>
-            </a>
-          </li>
-          <li class="list-inline-item">
-            <a href="https://www.facebook.com/profile.php?id=702097197">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-          </li>
-          <li class="list-inline-item">
-            <a href="https://www.linkedin.com/in/eric-conway-a1bb675b/">
-              <i class="fab fa-linkedin-in"></i>
-            </a>
-          </li>
-          <li class="list-inline-item">
-            <a href="https://github.com/eaconway">
-              <i class="fab fa-github"></i>
-            </a>
-          </li>
-        </ul> -->
       </div>
     </div>
 
@@ -75,11 +58,11 @@
       <div class='game-controls'>
         <div class='controls'>
           <button id='play' class="game-button">Play</button>
-          <button id='play' class="game-button">Pause</button>
+          <button id='pause' class="game-button">Pause</button>
         </div>
         <div class='controls'>
-          <button id='play' class="game-button">Restart Level</button>
-          <button id='play' class="game-button">Restart Game</button>
+          <button id='restart-l' class="game-button">Restart Level</button>
+          <a id='restart-g' class="game-button" href='/'>Restart Game</a>
         </div>
       </div>
       <canvas width="800" height="600" id="canvas"></canvas>

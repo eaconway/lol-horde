@@ -8,6 +8,7 @@ class GameView {
         this.start = this.start.bind(this);
         this.animate = this.animate.bind(this);
 
+        this.pause = false;
         // this.drawBoard();
     }
 
@@ -38,8 +39,21 @@ class GameView {
            }
          });
 
+        document.getElementById('pause').addEventListener('click', () =>{
+          this.pause = true;
+        })
+
+        document.getElementById('play').addEventListener('click', () =>{
+          this.pause = false;
+        })
+
     }
 
+    updateUI(){
+      document.querySelector('#level').innerHTML = this.game.currentLevel;
+
+      document.querySelector('#enemies').innerHTML = this.game.countEnemies();
+    }
 
     start() {
         this.bindKeyHandlers();
@@ -51,8 +65,11 @@ class GameView {
     animate(time) {
         const timeDelta = time - this.lastTime;
 
-        this.game.step(timeDelta);
-        this.game.draw(this.ctx);
+        if (this.pause === false){
+          this.game.step(timeDelta);
+          this.game.draw(this.ctx);
+          this.updateUI();
+        }
         this.lastTime = time;
         // console.log('animating');
         // every call to animate requests causes another call to animate

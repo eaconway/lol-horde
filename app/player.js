@@ -50,10 +50,9 @@ class Player extends MovingObject {
 
       this.image = new Image();
       this.image.src = "images/sheet_hero_idle.png";
-      console.log('image created' , this.image)
 
       this.tickCount = 0;
-      this.ticksPerFrame = 0;
+      this.ticksPerFrame = 4;
       this.frameIndex = 0;
       this.numberOfFrames = 8
       this.loop = options.loop;
@@ -83,7 +82,7 @@ class Player extends MovingObject {
 
       console.log('facing is', this.facing)
       const bullet = new Bullet({
-          pos: this.pos,
+          pos: [this.pos[0] + this.width/2, this.pos[1] + this.height*(3/4)],
           vel: [this.facing * 8, 0],
           color: this.color,
           game: this.game
@@ -94,7 +93,8 @@ class Player extends MovingObject {
 
   playerMove(move) {
     console.log('Player Moved AFHAFKJHWKVJHLEVKJAHLDFKJAN', move);
-    // debugger;
+
+    // MOVING VERTICALLY
     if (move[0] === 0){
       if (this.grounded && move[1] < 0){
         // console.log('jump', jump)
@@ -102,8 +102,17 @@ class Player extends MovingObject {
         this.vel[1] = Math.min(30, new_vel);
       }
     } else if (move[1] === 0) {
-      let new_vel = move[0] * 6;
-      this.vel[0] = Math.min(30, new_vel);
+      // MOVING HORIZONTALLY
+      // if (move[0] > 0){
+      //   let new_vel = move[0] * 6;
+      //   this.vel[0] = Math.min(30, new_vel);
+      // } else {
+      //   let new_vel = move[0] * 6;
+      //   this.vel[0] = Math.max(-30, new_vel);
+      // }
+      console.log('old position', this.pos[0]);
+      this.pos[0] += move[0];
+      console.log('new_position', this.pos[0])
 
       //Change orientation
       if (this.facing > 0 && move[0] < 0){
@@ -121,7 +130,7 @@ class Player extends MovingObject {
     // console.log('offsets,', offsetX, offsetY);
     // determine next location. If grounded, not jumping, and
     // moving horizontally, adjust
-    let nextOriginLoc = [Math.round(this.pos[0] + offsetX), Math.round(this.pos[1] + offsetY)];
+    let nextOriginLoc = [Math.floor(this.pos[0] + offsetX), Math.floor(this.pos[1] + offsetY)];
 
     if (this.grounded && this.vel[1] > 0 && this.vel[0] != 0){
       nextOriginLoc = [this.pos[0] + offsetX, this.pos[1]];
@@ -135,10 +144,10 @@ class Player extends MovingObject {
     let next_loc = '';
 
     let playerCorners = [
-      [Math.round(this.pos[0]),Math.round(this.pos[1])],
-      [Math.round(this.pos[0] + this.width), Math.round(this.pos[1])],
-      [Math.round(this.pos[0] + this.width), Math.round(this.pos[1] + this.height)],
-      [Math.round(this.pos[0]), Math.round(this.pos[1] + this.height)]
+      [Math.floor(this.pos[0]),Math.floor(this.pos[1])],
+      [Math.floor(this.pos[0] + this.width), Math.floor(this.pos[1])],
+      [Math.floor(this.pos[0] + this.width), Math.floor(this.pos[1] + this.height)],
+      [Math.floor(this.pos[0]), Math.floor(this.pos[1] + this.height)]
     ];
 
     // console.log('corners', playerCorners);
@@ -166,17 +175,17 @@ class Player extends MovingObject {
         ];
 
         if (this.grounded && this.vel[1] > 0 && this.vel[0] != 0){
-          next_loc = [Math.round(corner[0] + offsetX), Math.round(corner[1])];
+          next_loc = [Math.floor(corner[0] + offsetX), Math.floor(corner[1])];
         } else {
-          next_loc = [Math.round(corner[0] + offsetX), Math.round(corner[1] + offsetY)];
+          next_loc = [Math.floor(corner[0] + offsetX), Math.floor(corner[1] + offsetY)];
         }
 
         // Iterate through sides for intersections
         for (let k = 0; k < platformLines.length; k++){
           let line = platformLines[k];
 
-          let pLine = [Math.round(line[0][0]), Math.round(line[0][1]),
-              Math.round(line[1][0]), Math.round(line[1][1])];
+          let pLine = [Math.floor(line[0][0]), Math.floor(line[0][1]),
+              Math.floor(line[1][0]), Math.floor(line[1][1])];
 
           let intersection = LineIntersection.findSegmentIntersection([
             { x: corner[0], y: corner[1]},
@@ -213,7 +222,11 @@ class Player extends MovingObject {
         // debugger;
 
         // find shortest distance from intersect
-        let unit_divisor = ((this.vel[0])^2 + (this.vel[1])^2)^(1/2);
+        if (shortestPlatformSide[3] === "bottom"){
+          // debugger;
+        }
+        // let unit_divisor = ((this.vel[0])^2 + (this.vel[1])^2)^(1/2);
+        let unit_divisor = Math.pow((Math.pow(this.vel[0], 2) + Math.pow(this.vel[1], 2)), .5);
         let unit_vect = [(0 - this.vel[0])/unit_divisor, (0 - this.vel[1])/unit_divisor];
         let unit_vect_dirs = [];
 
@@ -226,6 +239,9 @@ class Player extends MovingObject {
         });
 
         // Intersect +/- unit vector +/- adjustment to avoid collision
+        console.log('unit vector x', unit_vect[0]);
+        console.log('unit vector y', unit_vect[1]);
+
         let new_x = cornerIntersect.x + unit_vect[0]
         let new_y = cornerIntersect.y + unit_vect[1]
         // return [new_x, new_y];
@@ -260,7 +276,7 @@ class Player extends MovingObject {
             this.vel[0] = 0;
             break;
           case 'bottom':
-            this.vel[1] = 0;
+            this.vel[1] = 1;
             break;
           case 'left':
             this.vel[0] = 0;
@@ -284,7 +300,7 @@ class Player extends MovingObject {
     this.update();
     console.log('frame index', this.frameIndex);
 
-    let terminal_vel_Y = 20;
+    let terminal_vel_Y = 15;
     let deceleration_Y = 1;
     let deceleration_X = 0.3;
 
@@ -297,16 +313,16 @@ class Player extends MovingObject {
     }
 
     // Horizontal Deceleration
-    if (this.vel[0] > 0){
-      // debugger;
-      let next_vel = this.vel[0] - deceleration_X;
-      // console.log("last vel", this.vel[0], 'next vel', next_vel);
-      this.vel[0] = Math.max(0, next_vel);
-    } else if (this.vel[0] < 0) {
-      let next_vel = this.vel[0] + deceleration_X;
-      // console.log("last vel", this.vel[0], 'next vel', next_vel);
-      this.vel[0] = Math.min(0, next_vel);
-    }
+    // if (this.vel[0] > 0){
+    //   // debugger;
+    //   let next_vel = this.vel[0] - deceleration_X;
+    //   console.log("last vel", this.vel[0], 'next vel', next_vel);
+    //   this.vel[0] = Math.max(0, next_vel);
+    // } else if (this.vel[0] < 0) {
+    //   let next_vel = this.vel[0] + deceleration_X;
+    //   console.log("last vel", this.vel[0], 'next vel', next_vel);
+    //   this.vel[0] = Math.min(0, next_vel);
+    // }
 
     // const velocityScale = timeDelta / NORMAL_FRAME_TIME_DELTA,
     // offsetX = this.vel[0] * velocityScale,
@@ -324,23 +340,8 @@ class Player extends MovingObject {
   }
 
   draw(ctx) {
-    // debugger;
     ctx.fillStyle = this.color;
     ctx.beginPath();
-    // c.fillStyle = "black";
-    // c.lineWidth = 2.0;
-    // c.beginPath();
-    // ctx.arc(
-    //     this.pos[0], this.pos[1], Player.RADIUS, 0, 2 * Math.PI, true
-    // );
-
-    // ctx.moveTo(this.pos[0], this.pos[1]);
-    // ctx.lineTo(this.pos[0] + this.width, this.pos[1]);
-    // ctx.lineTo(this.pos[0] + this.width, this.pos[1] + this.height);
-    // ctx.lineTo(this.pos[0], this.pos[1] + this.height);
-    // ctx.stroke();
-
-    // debugger;
     ctx.moveTo(this.pos[0], this.pos[1]);
     ctx.drawImage(this.image,
       this.frameIndex * 512 / this.numberOfFrames,
