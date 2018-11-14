@@ -7,7 +7,9 @@ class GameView {
 
         this.bindKeyHandlers = this.bindKeyHandlers.bind(this);
 
+        this.newGame = this.newGame.bind(this);
         this.start = this.start.bind(this);
+        // this.restart = this.restart.bind(this);
         this.animate = this.animate.bind(this);
         this.pause = false;
         // this.drawBoard();
@@ -43,12 +45,35 @@ class GameView {
 
         document.getElementById('pause').addEventListener('click', () =>{
           this.pause = true;
-        })
+        });
 
         document.getElementById('play').addEventListener('click', () =>{
           this.pause = false;
-        })
+        });
 
+        document.getElementById('next-level').addEventListener('click', () => {
+          this.game.loadNextLevel();
+          let levelComplete = document.getElementById('level-complete');
+          levelComplete.classList.add('hidden');
+          this.start();
+        });
+
+        document.getElementById('play-again').addEventListener('click', () => {
+          this.game.currentLevel = 0;
+          this.game.loadNextLevel();
+          let gameComplete = document.getElementById('game-complete');
+          gameComplete.classList.add('hidden');
+          this.start();
+        });
+
+        document.getElementById('restart-l').addEventListener('click', () => {
+          this.game.setUpLevel();
+        });
+
+        document.getElementById('restart-g').addEventListener('click', () => {
+          this.game.currentLevel = 1;
+          this.game.setUpLevel();
+        });
     }
 
     updateUI(){
@@ -57,16 +82,34 @@ class GameView {
       document.querySelector('#enemies').innerHTML = this.game.countEnemies();
     }
 
-    start() {
-        this.bindKeyHandlers();
-        this.lastTime = 0;
-        // start the animation
-        requestAnimationFrame(this.animate.bind(this));
+    newGame() {
+      this.bindKeyHandlers();
+      this.game.currentLevel = 1;
+      this.start();
+    }
 
-        console.log('game ended');
+    start(){
+      this.lastTime = 0;
+      // start the animation
+      requestAnimationFrame(this.animate.bind(this));
     }
 
     animate(time) {
+      //check if its the end of the game
+      if (this.game.levelLost()) {
+        console.log("sorry, you lost");
+        // this.game.displayLossScreen();
+      } else if (this.game.levelComplete()) {
+        // this.levelComplete = true;
+        console.log("Congrats, onto the next level");
+        if (this.game.currentLevel === 2){
+          this.game.displayGameComplete();
+        } else {
+          this.game.displayLevelComplete();
+        }
+        // this.game.loadNextLevel();
+        // setTimeout(this.loadNextLevel(), 1000);
+      } else {
         const timeDelta = time - this.lastTime;
 
         if (this.pause === false){
@@ -75,18 +118,8 @@ class GameView {
           this.updateUI();
         }
         this.lastTime = time;
-
-        //check if its the end of the game
-        if(this.game.countEnemies() === 0){
-          this.levelComplete = true;
-          this.game.loadNextLevel();
-          // this.game.displayLevelComplete();
-          // setTimeout(this.loadNextLevel(), 1000);
-
-        }
-        // console.log('animating');
-        // every call to animate requests causes another call to animate
         requestAnimationFrame(this.animate.bind(this));
+      }
     }
 
 }

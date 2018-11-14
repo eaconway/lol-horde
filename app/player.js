@@ -50,7 +50,8 @@ class Player extends MovingObject {
       ];
 
       this.image = new Image();
-      this.image.src = "images/sheet_hero_idle.png";
+      // this.image.src = "images/sheet_hero_idle.png";
+      this.image.src = "images/hero_spritesheet.png";
 
       this.tickCount = 0;
       this.ticksPerFrame = 4;
@@ -291,7 +292,7 @@ class Player extends MovingObject {
   };
 
   move(timeDelta) {
-    this.update();
+    // this.update();
     console.log('frame index', this.frameIndex);
 
     let terminal_vel_Y = 15;
@@ -345,8 +346,8 @@ class Player extends MovingObject {
       ctx.drawImage(this.image,
         this.frameIndex * 512 / this.numberOfFrames,
         35,
-        512 / this.numberOfFrames,
-        30,
+        62,
+        79,
         this.pos[0],
         this.pos[1],
         this.width,
@@ -354,15 +355,15 @@ class Player extends MovingObject {
         ctx.fill();
     } else {
       ctx.save();
-      ctx.translate(this.pos[0] + (512 / this.numberOfFrames / 2),this.pos[1]);
+      ctx.translate(this.pos[0] + (62 / 2),this.pos[1]);
       ctx.scale(-1,1);
 
       ctx.drawImage(this.image,
-        this.frameIndex * 512 / this.numberOfFrames,
+        this.frameIndex * 62,
         35,
-        512 / this.numberOfFrames,
+        62,
         30,
-        -(512 / this.numberOfFrames / 2),
+        -(62 / 2),
         0,
         this.width,
         this.height);

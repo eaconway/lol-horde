@@ -20,7 +20,7 @@
       <div class='game-meta-info'>
         <div class='game-meta-segment'>
           <h3>Character</h3>
-          <span id='character'>Tristana</span>
+          <span id='character'>Shining Knight</span>
         </div>
         <div class='game-meta-segment'>
           <h3>Level</h3>
@@ -62,10 +62,30 @@
         </div>
         <div class='controls'>
           <button id='restart-l' class="game-button">Restart Level</button>
-          <a id='restart-g' class="game-button" href='/'>Restart Game</a>
+          <button id='restart-g' class="game-button">Restart Game</button>
         </div>
       </div>
-      <canvas width="800" height="600" id="canvas"></canvas>
+
+      <div>
+        <div id='level-complete' class='level-overlay hidden'>
+          <div class="complete-message">
+            Congrats! You passed level <span id="current-level"></span>
+          </div>
+          <div id="next-level" class="next-button">
+            Next Level
+          </div>
+        </div>
+
+        <div id='game-complete' class='level-overlay hidden'>
+          <div class="complete-message">
+            CONGRATS! YOU BEAT THE GAME!
+          </div>
+          <div id="play-again" class="next-button">
+            Play Again?
+          </div>
+        </div>
+        <canvas width="800" height="600" id="canvas"></canvas>
+      </div>
     </div>
     <!-- <img src='./images/coin-sprite.png'/> -->
     <!-- <script>

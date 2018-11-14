@@ -43,6 +43,8 @@ class Game {
       this.checkCollisions = this.checkCollisions.bind(this);
       this.countEnemies = this.countEnemies.bind(this);
       this.loadNextLevel = this.loadNextLevel.bind(this);
+      this.levelLost = this.levelLost.bind(this);
+      this.levelComplete = this.levelComplete.bind(this);
       this.resetMap = this.resetMap.bind(this);
       this.resetPlayer = this.resetPlayer.bind(this);
 
@@ -73,7 +75,7 @@ class Game {
     resetPlayer(){
       let player = this.players[0];
 
-      player.pos = [100, 400];
+      player.pos = [10, 499];
       player.vel[1] = 1;
     }
 
@@ -101,12 +103,32 @@ class Game {
       this.resetPlayer();
     }
 
+    levelComplete(){
+      if (this.countEnemies() === 0) {return true;}
+      return false;
+    }
+
+    levelLost(){
+      if (!this.players[0].alive) { return true;}
+      return false;
+    }
+
     loadNextLevel(){
       // setTimeout();
       if (this.currentLevel < 3) {
         this.currentLevel += 1;
         this.setUpLevel();
       }
+    }
+
+    displayLevelComplete(){
+      let levelComplete = document.getElementById('level-complete');
+      levelComplete.classList.remove('hidden');
+    }
+
+    displayGameComplete(){
+      let gameComplete = document.getElementById('game-complete');
+      gameComplete.classList.remove('hidden');
     }
 
     countEnemies(){

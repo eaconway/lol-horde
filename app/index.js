@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const ctx = canvas.getContext("2d");
     window.ctx = ctx;
     const game = new Game();
-    new GameView(game, ctx).start();
+    new GameView(game, ctx).newGame();
 
     window.intersection = Intersection;
     // window.lineIntersect = LineIntersect;
