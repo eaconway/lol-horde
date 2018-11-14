@@ -3,11 +3,12 @@ class GameView {
         this.ctx = ctx;
         this.game = game;
         this.player = this.game.createPlayer();
+        this.game.setUpLevel();
 
         this.bindKeyHandlers = this.bindKeyHandlers.bind(this);
+
         this.start = this.start.bind(this);
         this.animate = this.animate.bind(this);
-
         this.pause = false;
         // this.drawBoard();
     }
@@ -19,7 +20,7 @@ class GameView {
           if (e.keyCode >= 37 && e.keyCode <= 40 ){
             let move = GameView.MOVES[e.keyCode];
             console.log('move', move);
-            player.isMoving = true;
+            player.isMovingX = true;
             // while (this.move) {
             player.playerMove(move);
             // }
@@ -27,8 +28,9 @@ class GameView {
         });
 
         document.addEventListener('keyup', (e) => {
-          if (e.keyCode >= 37 && e.keyCode <= 40 ){
-            player.isMoving = false;
+          if (e.keyCode === 37 || e.keyCode === 39 ){
+            player.isMovingX = false;
+            // player.playerMove();
           }
         });
 
@@ -60,6 +62,8 @@ class GameView {
         this.lastTime = 0;
         // start the animation
         requestAnimationFrame(this.animate.bind(this));
+
+        console.log('game ended');
     }
 
     animate(time) {
@@ -71,10 +75,20 @@ class GameView {
           this.updateUI();
         }
         this.lastTime = time;
+
+        //check if its the end of the game
+        if(this.game.countEnemies() === 0){
+          this.levelComplete = true;
+          this.game.loadNextLevel();
+          // this.game.displayLevelComplete();
+          // setTimeout(this.loadNextLevel(), 1000);
+
+        }
         // console.log('animating');
         // every call to animate requests causes another call to animate
         requestAnimationFrame(this.animate.bind(this));
     }
+
 }
 
 GameView.MOVES = {

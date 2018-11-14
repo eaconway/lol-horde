@@ -22,6 +22,8 @@ class Enemy {
     this.loop = options.loop;
 
     this.update = this.update.bind(this);
+    this.alive = true;
+    this.framesSinceDead = null;
   }
 
   update(){

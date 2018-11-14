@@ -40,6 +40,7 @@ class Player extends MovingObject {
       this.grounded = false;
       this.width = options.width;
       this.height = options.height;
+      this.isMovingX = false;
 
       this.facing = 1; //1 is facing right
       this.playerCorners = [
@@ -58,6 +59,9 @@ class Player extends MovingObject {
       this.loop = options.loop;
 
       this.update = this.update.bind(this);
+
+      this.alive = true;
+      this.framesSinceDead = null;
    }
 
   update(){
@@ -82,10 +86,11 @@ class Player extends MovingObject {
 
       console.log('facing is', this.facing)
       const bullet = new Bullet({
-          pos: [this.pos[0] + this.width/2, this.pos[1] + this.height*(3/4)],
+          pos: [this.pos[0] + this.width/2, this.pos[1] + this.height/2],
           vel: [this.facing * 8, 0],
           color: this.color,
-          game: this.game
+          game: this.game,
+          origin: this
       });
 
       this.game.add(bullet);
@@ -98,7 +103,7 @@ class Player extends MovingObject {
     if (move[0] === 0){
       if (this.grounded && move[1] < 0){
         // console.log('jump', jump)
-        let new_vel = move[1] * 20;
+        let new_vel = move[1] * 17;
         this.vel[1] = Math.min(30, new_vel);
       }
     } else if (move[1] === 0) {
@@ -110,8 +115,9 @@ class Player extends MovingObject {
       //   let new_vel = move[0] * 6;
       //   this.vel[0] = Math.max(-30, new_vel);
       // }
+
       console.log('old position', this.pos[0]);
-      this.pos[0] += move[0];
+      this.vel[0] = move[0] * 4;
       console.log('new_position', this.pos[0])
 
       //Change orientation
@@ -209,22 +215,10 @@ class Player extends MovingObject {
         };
       };
 
-      // if (nextOriginLoc[1] > 500){
-      //   debugger;
-      // }
-
-      // console.log('shortestPlatformSide', shortestPlatformSide[3]);
       console.log('cornerIntersect', cornerIntersect);
-      // console.log('smallest_dist_intersected', smallest_dist_intersected);
-      // console.log('cornerOrigin', cornerOrigin);
 
       if (cornerIntersect != '') {
-        // debugger;
-
         // find shortest distance from intersect
-        if (shortestPlatformSide[3] === "bottom"){
-          // debugger;
-        }
         // let unit_divisor = ((this.vel[0])^2 + (this.vel[1])^2)^(1/2);
         let unit_divisor = Math.pow((Math.pow(this.vel[0], 2) + Math.pow(this.vel[1], 2)), .5);
         let unit_vect = [(0 - this.vel[0])/unit_divisor, (0 - this.vel[1])/unit_divisor];
@@ -312,6 +306,10 @@ class Player extends MovingObject {
       this.vel[1] += deceleration_Y;
     }
 
+    if (this.isMovingX === false) {
+      this.vel[0] = 0;
+    }
+
     // Horizontal Deceleration
     // if (this.vel[0] > 0){
     //   // debugger;
@@ -340,20 +338,38 @@ class Player extends MovingObject {
   }
 
   draw(ctx) {
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.moveTo(this.pos[0], this.pos[1]);
-    ctx.drawImage(this.image,
-      this.frameIndex * 512 / this.numberOfFrames,
-      35,
-      512 / this.numberOfFrames,
-      30,
-      this.pos[0],
-      this.pos[1],
-      this.width,
-      this.height);
-      ctx.fill();
+    if (this.facing === 1) {
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.moveTo(this.pos[0], this.pos[1]);
+      ctx.drawImage(this.image,
+        this.frameIndex * 512 / this.numberOfFrames,
+        35,
+        512 / this.numberOfFrames,
+        30,
+        this.pos[0],
+        this.pos[1],
+        this.width,
+        this.height);
+        ctx.fill();
+    } else {
+      ctx.save();
+      ctx.translate(this.pos[0] + (512 / this.numberOfFrames / 2),this.pos[1]);
+      ctx.scale(-1,1);
+
+      ctx.drawImage(this.image,
+        this.frameIndex * 512 / this.numberOfFrames,
+        35,
+        512 / this.numberOfFrames,
+        30,
+        -(512 / this.numberOfFrames / 2),
+        0,
+        this.width,
+        this.height);
+
+      ctx.restore();
     }
+  }
 
   collideWith(otherObject) {
     if (otherObject instanceof Platform){
