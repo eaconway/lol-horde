@@ -10,15 +10,23 @@ html {
 }
 
 body {
-  background-color: grey;
+  background-color: black;
   padding: 0;
   margin: 0;
 }
 
-.container{
-  width: 75%;
-  margin: 0 auto;
+body,h1,h2,h3,h4,a,p,div,span {
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
+
+// @font-face {
+//   font-family: video-game;
+//   src: url('../../fonts/arcadeclassic/ARCADECLASSIC.TTF');
+// }
+// .container{
+//   width: 75%;
+//   margin: 0 auto;
+// }
 
 //GAME HEADER
 #game-head{
@@ -26,63 +34,36 @@ body {
   height: 140px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
-  // margin-bottom: 30px;
-
-  h1 {
-    text-align: center;
-    font-size: 50px;
-    font-weight: 600;
-    color: white;
-  }
 
   .game-logo {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 20%;
+    width: 60%;
     height: 140px;
     font-weight: 600;
+
+    h1 {
+      text-align: center;
+      font-size: 70px;
+      font-weight: 700;
+      color: white;
+      font-style: italic;
+      text-shadow: 2px 2px 8px black;
+      // font-family: video-game;
+    }
   }
 
   .game-logo a{
     text-decoration: none;
   }
 
-  .game-meta-info {
-    height: 140px;
-    width: 50%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    color: white;
-
-    .game-meta-segment {
-      height: 140px;
-      width: 30%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      align-items: center;
-
-      h3 {
-        font-weight: 600;
-        font-size: 22px;
-        text-align: center;
-      }
-
-      span {
-        font-weight: 600;
-        font-size: 25px;
-      }
-    }
-
-  }
-
   .contact{
     height: 140px;
-    width: 15%;
+    width: 20%;
+    margin: 5%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -99,26 +80,35 @@ body {
       border-radius: 50%;
       height: 35px;
       width: 35px;
-      background-color: black;
+      background-color: white;
       text-decoration: none;
       display: flex;
       justify-content: center;
       align-items: center;
       flex-grow: 1 0 40%;
+      transition: 0.5s;
+    }
+
+    a:hover{
+      background-color: yellow;
     }
 
     a .contact-icon {
       font-size: 20px;
-      color: white;
+      color: black;
     }
 
     .contact-icons-div {
       display: flex;
       flex-direction: row;
-      justify-content: space-around;
+      justify-content: flex-end;
       align-items: center;
       width: 100%;
       height: 50px;
+
+      a {
+        margin: 10px;
+      }
     }
   }
 }
@@ -127,40 +117,150 @@ body {
 #game-body{
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 100%;
+
+  .directions{
+    font-size: 20px;
+    width: 15%;
+    text-align: center;
+    color: white;
+
+    h2{
+      margin-bottom: 40px;
+    }
+    p {
+      margin: 25px 0px;
+    }
+  }
+
+  .game{
+    width: 55%;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    margin: 0% 2%;
+  }
+
+  #start-screen {
+    width: 600px;
+    height: 600px;
+    background-color: green;
+    display: flex;
+    align-items: center;
+
+    #start {
+      border-top: 4px solid white;
+      border-bottom: 4px solid white;
+      text-align: center;
+      height: 100px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 45px;
+      font-weight: 600;
+
+      -webkit-animation: bgcolorchange 4s infinite; /* Chrome, Safari, Opera */
+      animation: 4s infinite bgcolorchange;
+    }
+
+    @keyframes bgcolorchange {
+      0% { color: white; }
+      25% { color: red; }
+      50% { color: blue; }
+      75% { color: purple; }
+      100% { color: white; }
+    }
+
+    /* Chrome, Safari, Opera */
+    @-webkit-keyframes bgcolorchange {
+      0% {color: white;}
+      25% {color: red;}
+      50% {color: blue;}
+      75% {color: purple;}
+      100% {color: white;}
+    }
+  }
+
+  #start-screen:hover {
+    background-color: orange;
+  }
+
+  canvas {
+    position: absolute;
+  }
+
+  .game-meta-info {
+    width: 800px;
+    padding-top: 20px;
+    position: absolute;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: white;
+    z-index: 5;
+
+    .game-meta-segment {
+      width: 30%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+
+      h3 {
+        font-weight: 600;
+        font-size: 22px;
+        text-align: center;
+        margin: 0 auto;
+        margin-bottom: 10px;
+      }
+
+      span {
+        font-weight: 600;
+        font-size: 25px;
+      }
+    }
+
+  }
 
   .game-controls{
     height: 500px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    width: 30%;
-  }
-
-  .controls{
-    display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 15%;
+    color: white;
   }
 
-  .controls a{
-    color: black;
-    text-align: center;
-    text-decoration: none;
-    background-color: white;
-  }
+  // .controls{
+  //   display: flex;
+  //   flex-direction: column;
+  //   justify-content: center;
+  //   align-items: center;
+  //   color: white;
+  // }
 
-  .directions{
-    background-color: white;
-    border: 1px solid blue;
-    border-radius: 25px;
-    padding: 2%;
-    width: 200px;
-    text-align: center;
+  // .controls a{
+  //   color: black;
+  //   text-align: center;
+  //   text-decoration: none;
+  //   background-color: white;
+  // }
+
+  .game-dash{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    margin: 25px 0px;
+
+    i {
+      font-size: 30px;
+    }
   }
 
   .game-button {
@@ -171,6 +271,10 @@ body {
     font-size: 18px;
     margin: 15px;
     transition: color 0.5s;
+  }
+
+  .game-icon{
+    color: white;
   }
 
   .game-button:hover{
@@ -191,6 +295,7 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
+  z-index: 10;
 }
 
 .next-button {
@@ -223,5 +328,5 @@ body {
 }
 
 .hidden{
-  display: none;
+  display: none !important;
 }

@@ -9,15 +9,48 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 </head>
 <body>
-  <div class='container'>
-    <div id='game-head'>
-      <div class='game-logo'>
-        <a href="/">
-          <h1>THE LAST</h1>
+  <!-- <div class='container'> -->
+  <div id='game-head'>
+    <div class='contact'></div>
+
+    <div class='game-logo'>
+      <a href="/">
+        <h1>BAT'S AMAZING</h1>
+      </a>
+    </div>
+
+    <div class='contact'>
+      <div class='contact-icons-div'>
+        <a href="https://twitter.com/iceman2163?lang=en">
+          <i class="fab fa-twitter contact-icon"></i>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=702097197">
+          <i class="fab fa-facebook-f contact-icon"></i>
         </a>
       </div>
 
-      <div class='game-meta-info'>
+      <div class='contact-icons-div'>
+        <a href="https://www.linkedin.com/in/eric-conway-a1bb675b/">
+          <i class="fab fa-linkedin-in contact-icon"></i>
+        </a>
+        <a href="https://github.com/eaconway">
+          <i class="fab fa-github contact-icon"></i>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <div id='game-body'>
+    <div class='directions'>
+      <h2>How To Play</h2>
+      <p>Arrow keys to move</p>
+      <p>Spacebar to shoot</p>
+      <p>Good Luck! You'll need it...</p>
+    </div>
+
+    <div class='game'>
+      <div id='game-meta-info' class='game-meta-info hidden'>
         <div class='game-meta-segment'>
           <h3>Character</h3>
           <span id='character'>Explorer</span>
@@ -32,84 +65,53 @@
         </div>
       </div>
 
-      <div class='contact'>
-        <h2> Contact: </h2>
-        <div class='contact-icons-div'>
-          <a href="https://twitter.com/iceman2163?lang=en">
-            <i class="fab fa-twitter contact-icon"></i>
-          </a>
-          <a href="https://www.facebook.com/profile.php?id=702097197">
-            <i class="fab fa-facebook-f contact-icon"></i>
-          </a>
+      <div id='level-complete' class='level-overlay hidden'>
+        <div class="complete-message">
+          Congrats! You passed level <span id="current-level"></span>
         </div>
+        <div id="next-level" class="next-button">
+          Next Level
+        </div>
+      </div>
 
-        <div class='contact-icons-div'>
-          <a href="https://www.linkedin.com/in/eric-conway-a1bb675b/">
-            <i class="fab fa-linkedin-in contact-icon"></i>
-          </a>
-          <a href="https://github.com/eaconway">
-            <i class="fab fa-github contact-icon"></i>
-          </a>
+      <div id='game-complete' class='level-overlay hidden'>
+        <div class="complete-message">
+          CONGRATS! YOU WON!
         </div>
+        <div id="play-again" class="next-button">
+          Play Again?
+        </div>
+      </div>
+
+      <div id='game-lost' class='level-overlay hidden'>
+        <div class="complete-message">
+          Sorry, you lost.
+        </div>
+        <div id="try-again" class="next-button">
+          Try Again?
+        </div>
+      </div>
+
+      <div id='start-screen'>
+        <div id='start'>Start</div>
+      </div>
+
+      <canvas class="hidden" width="800" height="600" id="canvas"></canvas>
+    </div>
+
+    <div class='game-controls'>
+      <h1>Game Controls</h1>
+      <div class='game-dash'>
+        <i id='play' class="fas fa-play game-icon"></i>
+        <i id='pause' class="fas fa-pause game-icon"></i>
+      </div>
+
+      <div class='game-dash'>
+        <i id='restart-l' class="fas fa-redo game-icon"></i>
+        <i id='restart-g' class="fas fa-power-off game-icon"></i>
       </div>
     </div>
 
-    <div id='game-body'>
-      <div class='game-controls'>
-        <div class='controls'>
-          <button id='play' class="game-button">Play</button>
-          <button id='pause' class="game-button">Pause</button>
-        </div>
-        <div class='directions'>
-          <h2>Directions</h2>
-          <p>To move, press the arow keys.<br> Note* You can't duck/ press down yet.
-          <br><br>  See if you can beat all the levels!</p>
-        </div>
-        <div class='controls'>
-          <button id='restart-l' class="game-button">Restart Level</button>
-          <button id='restart-g' class="game-button">Restart Game</button>
-        </div>
-      </div>
-
-      <div>
-
-        <div id='level-complete' class='level-overlay hidden'>
-          <div class="complete-message">
-            Congrats! You passed level <span id="current-level"></span>
-          </div>
-          <div id="next-level" class="next-button">
-            Next Level
-          </div>
-        </div>
-
-        <div id='game-complete' class='level-overlay hidden'>
-          <div class="complete-message">
-            CONGRATS! YOU WON!
-          </div>
-          <div id="play-again" class="next-button">
-            Play Again?
-          </div>
-        </div>
-
-        <div id='game-lost' class='level-overlay hidden'>
-          <div class="complete-message">
-            Sorry, you lost.
-          </div>
-          <div id="try-again" class="next-button">
-            Try Again?
-          </div>
-        </div>
-
-        <canvas width="800" height="600" id="canvas"></canvas>
-      </div>
-    </div>
-    <!-- <img src='./images/coin-sprite.png'/> -->
-    <!-- <script>
-        var canvas = document.getElementById('canvas');
-        var c = canvas.getContext('2d');
-        c.fillStyle = "red";
-        c.fillRect(100, 100, 400, 300);
-    </script> -->
   </div>
 </body>
 </html>
