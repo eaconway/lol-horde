@@ -13,31 +13,68 @@ class Game {
       this.players = [];
       this.platforms = [];
       this.enemies = [];
+      this.defeatedEnemies = [];
 
       this.currentLevel = 1;
+      this.DIM_X = 0;
 
       this.levels = {
         1: {
           platforms: [
-            {pos: [0, Game.DIM_Y-50], width: Game.DIM_X},
-            {pos: [700, 425],  width: 100},
-            {pos: [400, 300],  width: Game.DIM_X/4}
+            {pos: [0, Game.DIM_Y-50], width: 800},
+            {pos: [100, 300], width: 200},
+            {pos: [400, 425], width: 250},
+            {pos: [700, 300], width: 100},
           ],
-          enemies: []
+          enemiesPerPlat: 1,
+          dims: {x: 800 , y: 600}
         },
         2: {
           platforms: [
-            {pos: [0, Game.DIM_Y-50], width: Game.DIM_X},
+            {pos: [0, Game.DIM_Y-50], width: 800},
             {pos: [700, 300], width: 100},
-            {pos: [400, 425], width: Game.DIM_X/4}
+            {pos: [400, 425], width: 250}
           ],
-          enemies: []
+          enemiesPerPlat: 1,
+          dims: {x: 800 , y: 600}
+        },
+        3: {
+          platforms: [
+            {pos: [0, Game.DIM_Y-50], width: 2000},
+            {pos: [50, 375],  width: 200},
+            {pos: [150, 175],  width: 200},
+            {pos: [400, 300],  width: 250},
+            {pos: [700, 425],  width: 100},
+            {pos: [900, 425],  width: 200},
+            {pos: [900, 175],  width: 200},
+            {pos: [1150, 300],  width: 100},
+            {pos: [1300, 300],  width: 250},
+          ],
+          enemiesPerPlat: 1,
+          dims: {x: 2000 , y: 600}
+        },
+        4: {
+          platforms: [
+            {pos: [0, Game.DIM_Y-50], width: 2000},
+            {pos: [50, 375],  width: 200},
+            {pos: [150, 175],  width: 200},
+            {pos: [400, 300],  width: 250},
+            {pos: [700, 425],  width: 100},
+            {pos: [900, 425],  width: 200},
+            {pos: [900, 175],  width: 200},
+            {pos: [1150, 300],  width: 100},
+            {pos: [1300, 300],  width: 250},
+          ],
+          enemiesPerPlat: 3,
+          dims: {x: 2000 , y: 600}
         }
       };
 
       // this.addAsteroids();
       // this.addPlatforms();
       // this.setUpLevel();
+
+      this.viewportDiffX = 0;
 
       this.createPlayer = this.createPlayer.bind(this);
       this.checkCollisions = this.checkCollisions.bind(this);
@@ -47,6 +84,7 @@ class Game {
       this.levelComplete = this.levelComplete.bind(this);
       this.resetMap = this.resetMap.bind(this);
       this.resetPlayer = this.resetPlayer.bind(this);
+      this.setUpLevel = this.setUpLevel.bind(this);
 
     }
 
@@ -85,6 +123,9 @@ class Game {
 
       let currentLevel = this.levels[this.currentLevel];
 
+      //Set DIM_X
+      this.DIM_X = currentLevel.dims.x;
+
       // Add Platforms
       currentLevel.platforms.forEach(platform => {
           this.add(new Platform({pos: [platform.pos[0], platform.pos[1]], width: platform.width, game: this}));
@@ -115,10 +156,15 @@ class Game {
 
     loadNextLevel(){
       // setTimeout();
-      if (this.currentLevel < 3) {
+      if (this.currentLevel < 4) {
         this.currentLevel += 1;
         this.setUpLevel();
       }
+    }
+
+    displayLossScreen(){
+      let gameLost = document.getElementById('game-lost');
+      gameLost.classList.remove('hidden');
     }
 
     displayLevelComplete(){
@@ -132,11 +178,12 @@ class Game {
     }
 
     countEnemies(){
-      let count = 0;
-      this.enemies.forEach( enemy => {
-        if (enemy.alive) {count += 1};
-      })
-      return count;
+      // let count = 0;
+      // this.enemies.forEach( enemy => {
+      //   if (enemy.alive) {count += 1};
+      // })
+      // return count;
+      return this.enemies.length;
     }
 
     createPlayer() {
@@ -168,16 +215,29 @@ class Game {
     }
 
     checkCollisions(){
+      let player = this.players[0];
+
+      // Did bullets hit Enemies? Did Enemies hit player?
       for( let i = 0; i < this.bullets.length; i++){
         for (let j = 0; j < this.enemies.length; j++) {
           let bullet = this.bullets[i];
           let enemy = this.enemies[j];
 
-          if(bullet.isCollidedWith(enemy)){
+          if(bullet && bullet.isCollidedWith(enemy)){
             //Remove Enemy at j
-            // this.enemies.splice(j, 1);
-            this.enemies[j].alive = false;
+            this.defeatedEnemies.push(this.enemies.splice(j, 1));
+            this.bullets.splice(i, 1);
+            // this.enemies[j].alive = false;
           }
+        }
+        // Also, should check if bullet hit player
+      }
+
+      //Check if an enemy hit the player
+      for(let i = 0; i < this.enemies.length; i++){
+        let enemy = this.enemies[i];
+        if(enemy.isCollidedWith(player)) {
+          player.alive = false;
         }
       }
     }
@@ -202,17 +262,16 @@ class Game {
     // }
 
     draw(ctx) {
-        ctx.clearRect(0, 0, Game.DIM_X, Game.DIM_Y);
+        ctx.clearRect(0, 0, this.DIM_X, Game.DIM_Y);
         ctx.fillStyle = Game.BG_COLOR;
         // ctx.fillStyle = 'grey';
         // debugger;
-        ctx.fillRect(0, 0, Game.DIM_X, Game.DIM_Y);
+        ctx.fillRect(0, 0, this.DIM_X, Game.DIM_Y);
         // debugger;
 
         this.allObjects().forEach((object) => {
           //Only draw living objects
-          if (!(object instanceof Enemy && object.alive === false) &&
-            !(object instanceof Player && object.alive === false)) {
+          if (!(object instanceof Enemy && object.alive === false)) {
             object.draw(ctx);
           }
         });
@@ -220,21 +279,13 @@ class Game {
 
     isOutOfBounds(pos) {
         return (pos[0] < 0) || (pos[1] < 0) ||
-            (pos[0] > Game.DIM_X) || (pos[1] > Game.DIM_Y);
+            (pos[0] > this.DIM_X) || (pos[1] > Game.DIM_Y);
     }
 
     moveObjects(delta) {
         this.allMovingObjects().forEach((object) => {
           object.move(delta);
         });
-    }
-
-
-    randomPosition() {
-        return [
-            Game.DIM_X * Math.random(),
-            Game.DIM_Y * Math.random()
-        ];
     }
 
     remove(object) {
@@ -248,17 +299,11 @@ class Game {
             throw new Error("unknown type of object");
         }
     }
-
-    wrap(pos) {
-        return [
-            HordeUtil.wrap(pos[0], Game.DIM_X), HordeUtil.wrap(pos[1], Game.DIM_Y)
-        ];
-    }
 }
 
 // Game.BG_COLOR = "#0099e6";
 Game.BG_COLOR = "#003300";
-Game.DIM_X = 1000;
+// Game.DIM_X = 1000;
 Game.DIM_Y = 600;
 Game.FPS = 32;
 Game.NUM_ASTEROIDS = 10;

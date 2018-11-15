@@ -20,7 +20,7 @@
       <div class='game-meta-info'>
         <div class='game-meta-segment'>
           <h3>Character</h3>
-          <span id='character'>Shining Knight</span>
+          <span id='character'>Explorer</span>
         </div>
         <div class='game-meta-segment'>
           <h3>Level</h3>
@@ -60,6 +60,11 @@
           <button id='play' class="game-button">Play</button>
           <button id='pause' class="game-button">Pause</button>
         </div>
+        <div class='directions'>
+          <h2>Directions</h2>
+          <p>To move, press the arow keys.<br> Note* You can't duck/ press down yet.
+          <br><br>  See if you can beat all the levels!</p>
+        </div>
         <div class='controls'>
           <button id='restart-l' class="game-button">Restart Level</button>
           <button id='restart-g' class="game-button">Restart Game</button>
@@ -67,6 +72,7 @@
       </div>
 
       <div>
+
         <div id='level-complete' class='level-overlay hidden'>
           <div class="complete-message">
             Congrats! You passed level <span id="current-level"></span>
@@ -78,12 +84,22 @@
 
         <div id='game-complete' class='level-overlay hidden'>
           <div class="complete-message">
-            CONGRATS! YOU BEAT THE GAME!
+            CONGRATS! YOU WON!
           </div>
           <div id="play-again" class="next-button">
             Play Again?
           </div>
         </div>
+
+        <div id='game-lost' class='level-overlay hidden'>
+          <div class="complete-message">
+            Sorry, you lost.
+          </div>
+          <div id="try-again" class="next-button">
+            Try Again?
+          </div>
+        </div>
+
         <canvas width="800" height="600" id="canvas"></canvas>
       </div>
     </div>

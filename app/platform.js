@@ -19,8 +19,16 @@ class Platform extends StaticObject {
         // console.log('creating platform' , options);
         super(options);
 
+        this.image = new Image();
+        this.image.src = "images/platform_ground.png";
         // this.pos = options.pos;
         this.center = [this.pos[0] + options.width/2, this.pos[1] + options.height/2];
+    }
+
+    draw(ctx){
+      ctx.drawImage(this.image,
+        0,0, 100, 20,
+        this.pos[0] + this.game.viewportDiffX, this.pos[1], this.width, this.height);
     }
 
     collideWith(otherObject) {

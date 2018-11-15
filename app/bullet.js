@@ -33,7 +33,7 @@ class Bullet extends MovingObject {
         325,
         20,
         20,
-        this.pos[0],
+        this.pos[0] + this.game.viewportDiffX,
         this.pos[1],
         this.width,
         this.height);

@@ -127,8 +127,9 @@ body {
 #game-body{
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  width: 100%;
 
   .game-controls{
     height: 500px;
@@ -136,6 +137,7 @@ body {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    width: 30%;
   }
 
   .controls{
@@ -150,6 +152,15 @@ body {
     text-align: center;
     text-decoration: none;
     background-color: white;
+  }
+
+  .directions{
+    background-color: white;
+    border: 1px solid blue;
+    border-radius: 25px;
+    padding: 2%;
+    width: 200px;
+    text-align: center;
   }
 
   .game-button {

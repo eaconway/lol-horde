@@ -25,22 +25,22 @@ class Player extends MovingObject {
       options.height = 50;
       options.vel = [0, 1];
       options.color = options.color || randomColor();
-      // options.color = options.color || '#e51709';
       super(options);
 
-      // this.center = [options.pos[0] + (options.width/2), options.pos[1] + (options.height/2)];
-      // this.pos = options.pos;
       this.move = this.move.bind(this);
       this.isCollidedWith = this.isCollidedWith.bind(this);
       this.playerMove = this.playerMove.bind(this);
       this.fireBullet = this.fireBullet.bind(this);
       this.nextValidMove = this.nextValidMove.bind(this);
       this.draw = this.draw.bind(this);
-      // this.rectCollide = this.rectCollide.bind(this);
+      this.drawWalk = this.drawWalk.bind(this);
+      this.drawIdle = this.drawIdle.bind(this);
+      this.drawJump = this.drawJump.bind(this);
       this.grounded = false;
       this.width = options.width;
       this.height = options.height;
       this.isMovingX = false;
+      this.platformOn = null;
 
       this.facing = 1; //1 is facing right
       this.playerCorners = [
@@ -50,14 +50,16 @@ class Player extends MovingObject {
       ];
 
       this.image = new Image();
-      // this.image.src = "images/sheet_hero_idle.png";
       this.image.src = "images/hero_spritesheet.png";
 
       this.tickCount = 0;
       this.ticksPerFrame = 4;
       this.frameIndex = 0;
       this.numberOfFrames = 8
+      this.startY = 10;
       this.loop = options.loop;
+      this.drawMode = 'idle';
+      this.lastDrawMode = 'idle';
 
       this.update = this.update.bind(this);
 
@@ -68,8 +70,12 @@ class Player extends MovingObject {
   update(){
     this.tickCount += 1;
 
-    if (this.tickCount > this.ticksPerFrame) {
+    if (this.drawMode != this.lastDrawMode){
+      this.frameIndex = 0;
+      this.lastDrawMode = this.drawMode;
+    }
 
+    if (this.tickCount > this.ticksPerFrame) {
     	this.tickCount = 0;
 
       // If the current frame index is in range
@@ -98,8 +104,6 @@ class Player extends MovingObject {
   }
 
   playerMove(move) {
-    console.log('Player Moved AFHAFKJHWKVJHLEVKJAHLDFKJAN', move);
-
     // MOVING VERTICALLY
     if (move[0] === 0){
       if (this.grounded && move[1] < 0){
@@ -109,40 +113,34 @@ class Player extends MovingObject {
       }
     } else if (move[1] === 0) {
       // MOVING HORIZONTALLY
-      // if (move[0] > 0){
-      //   let new_vel = move[0] * 6;
-      //   this.vel[0] = Math.min(30, new_vel);
-      // } else {
-      //   let new_vel = move[0] * 6;
-      //   this.vel[0] = Math.max(-30, new_vel);
-      // }
-
-      console.log('old position', this.pos[0]);
       this.vel[0] = move[0] * 4;
-      console.log('new_position', this.pos[0])
 
       //Change orientation
       if (this.facing > 0 && move[0] < 0){
-        console.log('change facing');
+        // console.log('change facing');
         this.facing = -1;
       } else if (this.facing < 0 && move[0] > 0){
         this.facing = 1;
       }
     }
-    // debugger;
   }
 
   nextValidMove(offsetX, offsetY){
     let collided = false;
-    // console.log('offsets,', offsetX, offsetY);
     // determine next location. If grounded, not jumping, and
     // moving horizontally, adjust
     let nextOriginLoc = [Math.floor(this.pos[0] + offsetX), Math.floor(this.pos[1] + offsetY)];
 
-    if (this.grounded && this.vel[1] > 0 && this.vel[0] != 0){
-      nextOriginLoc = [this.pos[0] + offsetX, this.pos[1]];
+    if(this.platformOn != null && ((this.platformOn.pos[0] > this.pos[0] &&
+        this.platformOn.pos[0] > (this.pos[0] + this.width)) ||
+        ((this.platformOn.pos[0] + this.platformOn.width) < this.pos[0] &&
+        (this.platformOn.pos[0] + this.platformOn.width) < (this.pos[0] + this.width)))) {
+          this.grounded = false;
     } else if (this.grounded && this.vel[0] === 0 && this.vel[1] > 0) {
       return this.pos;
+    } else {
+      this.grounded = false;
+      this.platformOn = null;
     }
 
     console.log('this pos', this.pos);
@@ -156,8 +154,6 @@ class Player extends MovingObject {
       [Math.floor(this.pos[0] + this.width), Math.floor(this.pos[1] + this.height)],
       [Math.floor(this.pos[0]), Math.floor(this.pos[1] + this.height)]
     ];
-
-    // console.log('corners', playerCorners);
 
     // find all the platforms and iterate through them
     let platforms = this.game.platforms;
@@ -205,7 +201,7 @@ class Player extends MovingObject {
             let dist = Math.abs(
               ((intersection.x - corner[0])^2 + (intersection.y - corner[1])^2)^(1/2)
             );
-            // console.log('dist for ', line[3], ' is ', dist);
+
             if (smallest_dist_intersected === ""  || dist < smallest_dist_intersected){
               shortestPlatformSide  = line;
               cornerIntersect = intersection;
@@ -237,9 +233,8 @@ class Player extends MovingObject {
         console.log('unit vector x', unit_vect[0]);
         console.log('unit vector y', unit_vect[1]);
 
-        let new_x = cornerIntersect.x + unit_vect[0]
-        let new_y = cornerIntersect.y + unit_vect[1]
-        // return [new_x, new_y];
+        let new_x = cornerIntersect.x + unit_vect_dirs[0]
+        let new_y = cornerIntersect.y + unit_vect_dirs[1]
 
         //adjust next_loc based on corner
         // debugger
@@ -280,27 +275,22 @@ class Player extends MovingObject {
             break;
         }
 
-        // console.log('final pos', next_loc);
+        this.platformOn = platform;
         this.collided = true;
         return next_loc;
 
       }
     }
     // there were no collisions, so return next_loc as is
-    this.grounded = false;
     return nextOriginLoc;
   };
 
   move(timeDelta) {
-    // this.update();
-    console.log('frame index', this.frameIndex);
+    this.update();
 
     let terminal_vel_Y = 15;
     let deceleration_Y = 1;
     let deceleration_X = 0.3;
-
-    console.log('grounded?', this.grounded);
-    console.log('velocity', this.vel);
 
     //GRAVITY - Vertical Deceleration
     if (this.vel[1] < terminal_vel_Y && this.grounded === false) {
@@ -311,62 +301,102 @@ class Player extends MovingObject {
       this.vel[0] = 0;
     }
 
-    // Horizontal Deceleration
-    // if (this.vel[0] > 0){
-    //   // debugger;
-    //   let next_vel = this.vel[0] - deceleration_X;
-    //   console.log("last vel", this.vel[0], 'next vel', next_vel);
-    //   this.vel[0] = Math.max(0, next_vel);
-    // } else if (this.vel[0] < 0) {
-    //   let next_vel = this.vel[0] + deceleration_X;
-    //   console.log("last vel", this.vel[0], 'next vel', next_vel);
-    //   this.vel[0] = Math.min(0, next_vel);
-    // }
-
-    // const velocityScale = timeDelta / NORMAL_FRAME_TIME_DELTA,
-    // offsetX = this.vel[0] * velocityScale,
-    // offsetY = this.vel[1] * velocityScale;
-
     const velocityScale = timeDelta / NORMAL_FRAME_TIME_DELTA,
     offsetX = Number(Number.parseFloat(this.vel[0] * velocityScale).toPrecision(3)),
     offsetY =  Number(Number.parseFloat(this.vel[1] * velocityScale).toPrecision(3));
 
-    console.log('offsetX, offsetY', offsetX, offsetY);
-
     this.pos = this.nextValidMove(offsetX, offsetY);
-    console.log('new pos after next valid is: ', this.pos);
-
   }
 
-  draw(ctx) {
+  draw(ctx){
+    if(this.grounded && this.vel[0] === 0){
+      this.drawIdle(ctx);
+    } else if (this.grounded){
+      this.drawWalk(ctx);
+    } else if (!this.grounded){
+      this.drawJump(ctx);
+    }
+  }
+
+  drawIdle(ctx) {
+    this.numberOfFrames = 8;
+    this.startY = 10;
+    this.ticksPerFrame = 4;
+    this.drawMode = 'idle';
+    // ctx.clearRect(this.pos[0], this.pos[1], this.width, this.height);
+    // console.log('drawing idle');
     if (this.facing === 1) {
-      ctx.fillStyle = this.color;
-      ctx.beginPath();
-      ctx.moveTo(this.pos[0], this.pos[1]);
       ctx.drawImage(this.image,
-        this.frameIndex * 512 / this.numberOfFrames,
-        35,
-        62,
-        79,
-        this.pos[0],
-        this.pos[1],
-        this.width,
-        this.height);
-        ctx.fill();
+        // this.frameIndex * 62,
+        (this.frameIndex * 640 / this.numberOfFrames) + 5, this.startY,
+        65,73,
+        this.pos[0] + this.game.viewportDiffX, this.pos[1], this.width, this.height);
     } else {
       ctx.save();
-      ctx.translate(this.pos[0] + (62 / 2),this.pos[1]);
+      ctx.translate(this.pos[0] + this.game.viewportDiffX + (65 / 2),this.pos[1]);
       ctx.scale(-1,1);
 
       ctx.drawImage(this.image,
-        this.frameIndex * 62,
-        35,
-        62,
-        30,
-        -(62 / 2),
-        0,
-        this.width,
-        this.height);
+        // this.frameIndex * 65,
+        (this.frameIndex * 640 / this.numberOfFrames) + 5, this.startY,
+        65, 73,
+        -(65 / 2), 0, this.width, this.height);
+
+      ctx.restore();
+    }
+  }
+
+  drawWalk(ctx) {
+    this.numberOfFrames = 6;
+    this.startY = 110;
+    this.ticksPerFrame = 16;
+    this.drawMode = 'walk';
+    // ctx.clearRect(this.pos[0] + this.game.viewportDiffX, this.pos[1], this.width, this.height);
+    // console.log('drawing walking');
+    if (this.facing === 1) {
+      ctx.drawImage(this.image,
+        // this.frameIndex * 62,
+        (this.frameIndex * 480 / this.numberOfFrames) + 5, this.startY,
+        65,73,
+        this.pos[0] + this.game.viewportDiffX, this.pos[1], this.width, this.height);
+    } else {
+      ctx.save();
+      ctx.translate(this.pos[0] + this.game.viewportDiffX + (65 / 2),this.pos[1]);
+      ctx.scale(-1,1);
+
+      ctx.drawImage(this.image,
+        // this.frameIndex * 65,
+        (this.frameIndex * 480 / this.numberOfFrames) + 5, this.startY,
+        65, 73,
+        -(65 / 2), 0, this.width, this.height);
+
+      ctx.restore();
+    }
+  }
+
+  drawJump(ctx) {
+    this.numberOfFrames = 3;
+    this.startY = 290;
+    this.ticksPerFrame = 10;
+    this.drawMode = 'jump';
+    // ctx.clearRect(this.pos[0] + this.game.viewportDiffX, this.pos[1], this.width, this.height);
+
+    if (this.facing === 1) {
+      ctx.drawImage(this.image,
+        // this.frameIndex * 62,
+        (this.frameIndex * 240 / this.numberOfFrames) + 5, this.startY,
+        65,79,
+        this.pos[0] + this.game.viewportDiffX, this.pos[1], this.width, this.height);
+    } else {
+      ctx.save();
+      ctx.translate(this.pos[0] + this.game.viewportDiffX + (65 / 2),this.pos[1]);
+      ctx.scale(-1,1);
+
+      ctx.drawImage(this.image,
+        // this.frameIndex * 65,
+        (this.frameIndex * 240 / this.numberOfFrames) + 5, this.startY,
+        65, 79,
+        -(65 / 2), 0, this.width, this.height);
 
       ctx.restore();
     }
@@ -379,41 +409,6 @@ class Player extends MovingObject {
       this.vel[1] = 0;
     }
 
-  }
-
-  relocate() {
-      this.pos = this.game.randomPosition();
-      // this.vel = [0, 0];
-  }
-
-  isCollidedWith(otherObject) {
-    // if (otherObject instanceof Player || otherObject instanceof Player  )
-    // const centerDist = HordeUtil.dist(this.pos, otherObject.pos);
-    // return centerDist < (this.radius + otherObject.radius);
-
-
-    if (otherObject instanceof Platform) {
-      // console.log('checking for player plat collision');
-
-      let circleDistance = {};
-
-      circleDistance.x = Math.abs(otherObject.center[0] - this.pos[0]);
-      circleDistance.y = Math.abs(otherObject.center[0] - this.pos[0]);
-
-      if (circleDistance.x > (otherObject.width/2 + this.radius)) { return false; }
-      if (circleDistance.y > (otherObject.height/2 + this.radius)) { return false; }
-
-      if (circleDistance.x <= (otherObject.width/2)) { return true; }
-      if (circleDistance.y <= (otherObject.height/2)) { return true; }
-
-      let cornerDistance_sq = (circleDistance.x - otherObject.width/2)^2 + (circleDistance.y - otherObject.height/2)^2;
-      return (cornerDistance_sq <= (this.radius^2));
-
-    } else {
-      // debugger;
-      const centerDist = HordeUtil.dist(this.pos, otherObject.pos);
-      return centerDist < (this.radius + otherObject.radius);
-    }
   }
 }
 
