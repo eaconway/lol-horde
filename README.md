@@ -1,6 +1,7 @@
 # Last Explorer
 
 Welcome to the Last Explorer (Previously LoL-Horde)!
+Link to Website: [Last Explorer](https://lastexplorer.netlify.com/)
 
 # Background and Overview
 Last Explorer is an interactive game where a user is tasked to get rid of all of the enemies before moving onto the next level. The idea is to clear the level being killed by the enemies. All combatants will have access to guns (ranged) or can kill you by touch (melee).
