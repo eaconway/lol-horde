@@ -1,0 +1,283 @@
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+body {
+  background-color: black;
+  padding: 0;
+  margin: 0;
+}
+body, h1, h2, h3, h4, a, p, div, span {
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+#game-head {
+  width: 100%;
+  height: 140px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+#game-head .game-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60%;
+  height: 140px;
+  font-weight: 600;
+}
+#game-head .game-logo h1 {
+  text-align: center;
+  font-size: 70px;
+  font-weight: 700;
+  color: white;
+  font-style: italic;
+  text-shadow: 2px 2px 8px black;
+}
+#game-head .game-logo a {
+  text-decoration: none;
+}
+#game-head .contact {
+  height: 140px;
+  width: 20%;
+  margin: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#game-head .contact h2 {
+  font-size: 30px;
+  font-weight: 600;
+  margin: 10px 0px 10px 0px;
+  color: white;
+}
+#game-head .contact a {
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  background-color: white;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1 0 40%;
+  transition: 0.5s;
+}
+#game-head .contact a:hover {
+  background-color: yellow;
+}
+#game-head .contact a .contact-icon {
+  font-size: 20px;
+  color: black;
+}
+#game-head .contact .contact-icons-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+}
+#game-head .contact .contact-icons-div a {
+  margin: 10px;
+}
+#game-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+#game-body .directions {
+  font-size: 20px;
+  width: 15%;
+  text-align: center;
+  color: white;
+}
+#game-body .directions h2 {
+  margin-bottom: 40px;
+}
+#game-body .directions p {
+  margin: 25px 0;
+}
+#game-body .game {
+  width: 55%;
+  height: 600px;
+  display: flex;
+  justify-content: center;
+  margin: 0 2%;
+}
+#game-body #start-screen {
+  width: 600px;
+  height: 600px;
+  background-color: green;
+  display: flex;
+  align-items: center;
+  /* Chrome, Safari, Opera */
+}
+#game-body #start-screen #start {
+  border-top: 4px solid white;
+  border-bottom: 4px solid white;
+  text-align: center;
+  height: 100px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 45px;
+  font-weight: 600;
+  -webkit-animation: bgcolorchange 4s infinite;
+  /* Chrome, Safari, Opera */
+  animation: 4s infinite bgcolorchange;
+}
+@keyframes bgcolorchange {
+  0% {
+    color: white;
+  }
+  25% {
+    color: red;
+  }
+  50% {
+    color: blue;
+  }
+  75% {
+    color: purple;
+  }
+  100% {
+    color: white;
+  }
+}
+@-webkit-keyframes bgcolorchange {
+  0% {
+    color: white;
+  }
+  25% {
+    color: red;
+  }
+  50% {
+    color: blue;
+  }
+  75% {
+    color: purple;
+  }
+  100% {
+    color: white;
+  }
+}
+#game-body #start-screen:hover {
+  background-color: orange;
+}
+#game-body canvas {
+  position: absolute;
+}
+#game-body .game-meta-info {
+  width: 800px;
+  padding-top: 20px;
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  color: white;
+  z-index: 5;
+}
+#game-body .game-meta-info .game-meta-segment {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+#game-body .game-meta-info .game-meta-segment h3 {
+  font-weight: 600;
+  font-size: 22px;
+  text-align: center;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+#game-body .game-meta-info .game-meta-segment span {
+  font-weight: 600;
+  font-size: 25px;
+}
+#game-body .game-controls {
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 15%;
+  color: white;
+}
+#game-body .game-dash {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+  margin: 25px 0px;
+}
+#game-body .game-dash i {
+  font-size: 30px;
+}
+#game-body .game-button {
+  border: 1px solid blue;
+  padding: 10px;
+  border-radius: 25px;
+  width: 150px;
+  font-size: 18px;
+  margin: 15px;
+  transition: color 0.5s;
+}
+#game-body .game-icon {
+  color: white;
+}
+#game-body .game-button:hover {
+  color: white;
+  background-color: blue;
+  border: 2px solid white;
+}
+.level-overlay {
+  position: absolute;
+  height: 600px;
+  width: 800px;
+  background-color: black;
+  opacity: 0.7;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 10;
+}
+.next-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 75px;
+  border-radius: 25px;
+  border: 1px solid blue;
+  margin-top: 100px;
+  color: white;
+  font-size: 25px;
+}
+.next-button:hover {
+  color: blue;
+  background-color: white;
+}
+.complete-message {
+  border: 2px solid red;
+  padding: 30px;
+  font-size: 30px;
+  width: 400px;
+  height: 100px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hidden {
+  display: none !important;
+}

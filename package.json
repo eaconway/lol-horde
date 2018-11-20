@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "intersection": "0.0.1",
+    "intersects": "^2.3.0",
     "line-intersect": "^2.1.1",
     "line-intersection": "^1.0.9",
     "line-segments-intersect": "0.0.0",
