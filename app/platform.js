@@ -20,7 +20,7 @@ class Platform extends StaticObject {
         super(options);
 
         this.image = new Image();
-        this.image.src = "images/platform_ground.png";
+        this.image.src = "../images/platform_ground.png";
         // this.pos = options.pos;
         this.center = [this.pos[0] + options.width/2, this.pos[1] + options.height/2];
     }

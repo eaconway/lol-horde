@@ -50,7 +50,7 @@ class Player extends MovingObject {
       ];
 
       this.image = new Image();
-      this.image.src = "images/hero_spritesheet.png";
+      this.image.src = "../images/hero_spritesheet.png";
 
       this.tickCount = 0;
       this.ticksPerFrame = 4;

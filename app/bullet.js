@@ -11,7 +11,7 @@ class Bullet extends MovingObject {
         this.origin = options.origin;
 
         this.image = new Image();
-        this.image.src = "images/M484BulletCollection1.png";
+        this.image.src = "../images/M484BulletCollection1.png";
 
         this.isCollidedWith = this.isCollidedWith.bind(this);
     }

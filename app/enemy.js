@@ -24,7 +24,7 @@ class Enemy {
     this.direction = 1;
 
     this.image = new Image();
-    this.image.src = "images/sheet_bat_fly.png";
+    this.image.src = "../images/sheet_bat_fly.png";
 
     this.tickCount = 0;
     this.ticksPerFrame = 4;
