@@ -1,9 +1,10 @@
-# lol-horde
+# Last Explorer
 
-Welcome to the LoL: Horde Mode (League of Legends)
+Welcome to the Last Explorer (Previously LoL-Horde)!
+Link to Website: [Last Explorer](https://lastexplorer.netlify.com/)
 
 # Background and Overview
-LoL: Horde Mode is an interactive game where a user is tasked to get rid of all of the enemies before moving onto the next level. The idea is to clear the level being killed by the enemies. All combatants will have access to guns (ranged) or can kill you by touch (melee).
+Last Explorer is an interactive game where a user is tasked to get rid of all of the enemies before moving onto the next level. The idea is to clear the level being killed by the enemies. All combatants will have access to guns (ranged) or can kill you by touch (melee).
 
 The game is called LoL: Horde Mode because the character will be a league of legends character head shooting other characters in the game.
 
