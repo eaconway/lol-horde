@@ -1,10 +1,7 @@
 import 'styles/index.scss';
-
-
 import Game from './game';
 import GameView from './game_view';
 import Intersection from 'intersection';
-// import lineIntersect from 'line-intersect';
 
 document.addEventListener("DOMContentLoaded", () => {
     let canvas = document.getElementById("canvas");

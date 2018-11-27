@@ -1,5 +1,4 @@
 import * as HordeUtil from "./horde_util";
-import Asteroid from './asteroid';
 import Platform from './platform';
 import Player from './player';
 import Bullet from './bullet';
@@ -8,7 +7,6 @@ import Enemy from './enemy';
 
 class Game {
     constructor() {
-      this.asteroids = [];
       this.bullets = [];
       this.players = [];
       this.platforms = [];
@@ -22,57 +20,53 @@ class Game {
         1: {
           platforms: [
             {pos: [0, Game.DIM_Y-50], width: 800},
-            {pos: [100, 300], width: 200},
-            {pos: [400, 425], width: 250},
-            {pos: [700, 300], width: 100},
+            {pos: [100, 200], width: 200},
+            {pos: [400, 325], width: 250},
+            {pos: [700, 200], width: 100},
           ],
           enemiesPerPlat: 1,
-          dims: {x: 800 , y: 600}
+          dims: {x: 800 , y: 500}
         },
         2: {
           platforms: [
             {pos: [0, Game.DIM_Y-50], width: 800},
-            {pos: [700, 300], width: 100},
-            {pos: [400, 425], width: 250}
+            {pos: [700, 200], width: 100},
+            {pos: [400, 325], width: 250}
           ],
           enemiesPerPlat: 1,
-          dims: {x: 800 , y: 600}
+          dims: {x: 800 , y: 500}
         },
         3: {
           platforms: [
             {pos: [0, Game.DIM_Y-50], width: 2000},
-            {pos: [50, 375],  width: 200},
-            {pos: [150, 175],  width: 200},
-            {pos: [400, 300],  width: 250},
-            {pos: [700, 425],  width: 100},
-            {pos: [900, 425],  width: 200},
-            {pos: [900, 175],  width: 200},
-            {pos: [1150, 300],  width: 100},
-            {pos: [1300, 300],  width: 250},
+            {pos: [50, 275],  width: 200},
+            {pos: [150, 75],  width: 200},
+            {pos: [400, 200],  width: 250},
+            {pos: [700, 325],  width: 100},
+            {pos: [900, 325],  width: 200},
+            {pos: [900, 75],  width: 200},
+            {pos: [1150, 200],  width: 100},
+            {pos: [1300, 200],  width: 250},
           ],
           enemiesPerPlat: 1,
-          dims: {x: 2000 , y: 600}
+          dims: {x: 2000 , y: 500}
         },
         4: {
           platforms: [
             {pos: [0, Game.DIM_Y-50], width: 2000},
-            {pos: [50, 375],  width: 200},
-            {pos: [150, 175],  width: 200},
-            {pos: [400, 300],  width: 250},
-            {pos: [700, 425],  width: 100},
-            {pos: [900, 425],  width: 200},
-            {pos: [900, 175],  width: 200},
-            {pos: [1150, 300],  width: 100},
-            {pos: [1300, 300],  width: 250},
+            {pos: [50, 275],  width: 200},
+            {pos: [150, 75],  width: 200},
+            {pos: [400, 200],  width: 250},
+            {pos: [700, 325],  width: 100},
+            {pos: [900, 325],  width: 200},
+            {pos: [900, 75],  width: 200},
+            {pos: [1150, 200],  width: 100},
+            {pos: [1300, 200],  width: 250},
           ],
           enemiesPerPlat: 3,
-          dims: {x: 2000 , y: 600}
+          dims: {x: 2000 , y: 500}
         }
       };
-
-      // this.addAsteroids();
-      // this.addPlatforms();
-      // this.setUpLevel();
 
       this.viewportDiffX = 0;
 
@@ -89,9 +83,7 @@ class Game {
     }
 
     add(object) {
-        if (object instanceof Asteroid) {
-            this.asteroids.push(object);
-        } else if (object instanceof Enemy) {
+        if (object instanceof Enemy) {
             this.enemies.push(object);
         } else if (object instanceof Bullet) {
             this.bullets.push(object);
@@ -113,14 +105,13 @@ class Game {
     resetPlayer(){
       let player = this.players[0];
 
-      player.pos = [10, 499];
+      player.pos = [10, 399];
       player.vel[1] = 1;
     }
 
     setUpLevel(){
       // Clear Map
       this.resetMap();
-
       let currentLevel = this.levels[this.currentLevel];
 
       //Set DIM_X
@@ -155,7 +146,6 @@ class Game {
     }
 
     loadNextLevel(){
-      // setTimeout();
       if (this.currentLevel < 4) {
         this.currentLevel += 1;
         this.setUpLevel();
@@ -178,17 +168,12 @@ class Game {
     }
 
     countEnemies(){
-      // let count = 0;
-      // this.enemies.forEach( enemy => {
-      //   if (enemy.alive) {count += 1};
-      // })
-      // return count;
       return this.enemies.length;
     }
 
     createPlayer() {
         const player = new Player({
-            pos: [100, 400],
+            pos: [100, 300],
             game: this
         });
         this.add(player);
@@ -230,7 +215,6 @@ class Game {
             // this.enemies[j].alive = false;
           }
         }
-        // Also, should check if bullet hit player
       }
 
       //Check if an enemy hit the player
@@ -242,32 +226,10 @@ class Game {
       }
     }
 
-    // checkCollisions() {
-    //     const allObjects = this.allObjects();
-    //
-    //     if (allObjects.length > 1){
-    //       for (let i = 0; i < allObjects.length; i++) {
-    //           for (let j = 0; j < allObjects.length; j++) {
-    //               let obj1 = allObjects[i];
-    //               let obj2 = allObjects[j];
-    //               // debugger;
-    //
-    //               if (obj1 != obj2 && obj1.isCollidedWith(obj2)) {
-    //                   const collision = obj1.collideWith(obj2);
-    //                   if (collision) return;
-    //               }
-    //           }
-    //       }
-    //     }
-    // }
-
     draw(ctx) {
         ctx.clearRect(0, 0, this.DIM_X, Game.DIM_Y);
         ctx.fillStyle = Game.BG_COLOR;
-        // ctx.fillStyle = 'grey';
-        // debugger;
         ctx.fillRect(0, 0, this.DIM_X, Game.DIM_Y);
-        // debugger;
 
         this.allObjects().forEach((object) => {
           //Only draw living objects
@@ -291,8 +253,6 @@ class Game {
     remove(object) {
         if (object instanceof Bullet) {
             this.bullets.splice(this.bullets.indexOf(object), 1);
-        } else if (object instanceof Asteroid) {
-            this.asteroids.splice(this.asteroids.indexOf(object), 1);
         } else if (object instanceof Player) {
             this.players.splice(this.players.indexOf(object), 1);
         } else {
@@ -304,7 +264,7 @@ class Game {
 // Game.BG_COLOR = "#0099e6";
 Game.BG_COLOR = "#003300";
 // Game.DIM_X = 1000;
-Game.DIM_Y = 600;
+Game.DIM_Y = 500;
 Game.FPS = 32;
 Game.NUM_ASTEROIDS = 10;
 
