@@ -29,42 +29,33 @@ class Game {
         },
         2: {
           platforms: [
-            {pos: [0, Game.DIM_Y-50], width: 800},
-            {pos: [700, 200], width: 100},
-            {pos: [400, 325], width: 250}
+            {pos: [0, Game.DIM_Y-50], width: 2000},
+            {pos: [50, 275],  width: 200},
+            {pos: [150, 75],  width: 200},
+            {pos: [400, 200],  width: 250},
+            {pos: [700, 325],  width: 100},
+            {pos: [900, 325],  width: 200},
+            {pos: [900, 75],  width: 200},
+            {pos: [1150, 200],  width: 100},
+            {pos: [1300, 200],  width: 250},
           ],
           enemiesPerPlat: 1,
-          dims: {x: 800 , y: 500}
+          dims: {x: 1650 , y: 500}
         },
         3: {
           platforms: [
-            {pos: [0, Game.DIM_Y-50], width: 2000},
-            {pos: [50, 275],  width: 200},
-            {pos: [150, 75],  width: 200},
-            {pos: [400, 200],  width: 250},
-            {pos: [700, 325],  width: 100},
-            {pos: [900, 325],  width: 200},
-            {pos: [900, 75],  width: 200},
-            {pos: [1150, 200],  width: 100},
-            {pos: [1300, 200],  width: 250},
+            {pos: [0, Game.DIM_Y-50], width: 800},
+            // {pos: [700, 200], width: 100},
+            {pos: [700, 100], width: 100},
+            {pos: [450, 150], width: 100},
+            {pos: [550, 275], width: 100},
+            {pos: [400, 325], width: 100},
+            {pos: [10, 275], width: 100},
+            {pos: [10, 175], width: 100},
+            {pos: [10, 75], width: 100}
           ],
           enemiesPerPlat: 1,
-          dims: {x: 2000 , y: 500}
-        },
-        4: {
-          platforms: [
-            {pos: [0, Game.DIM_Y-50], width: 2000},
-            {pos: [50, 275],  width: 200},
-            {pos: [150, 75],  width: 200},
-            {pos: [400, 200],  width: 250},
-            {pos: [700, 325],  width: 100},
-            {pos: [900, 325],  width: 200},
-            {pos: [900, 75],  width: 200},
-            {pos: [1150, 200],  width: 100},
-            {pos: [1300, 200],  width: 250},
-          ],
-          enemiesPerPlat: 3,
-          dims: {x: 2000 , y: 500}
+          dims: {x: 850 , y: 500}
         }
       };
 
