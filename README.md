@@ -43,4 +43,4 @@ Day 2 (Wed): User can shoot projectiles, Enemies can shoot projectiles, User can
 Day 3 (Thurs): User can complete a level and move onto then next level, map is populated with platforms
 Day 4 (Fri): User can jump, fall. Enemies follow user.
 Day 5 (Sat): Fix bugs with enemies/player. Allow players to swap option for character. Finish UI details (Start/Stop button, enemies remaining, etc)
-Day 6 (Sun): Any extra lingering things
+Day 6 (Sun): Any extra lingering things 
